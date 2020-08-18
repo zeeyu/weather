@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_white_round">
+
+    <TextView
+        android:id="@+id/tv_main_grid_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:text="风力风向" />
+
+    <ImageView
+        android:id="@+id/iv_main_grid_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_wind"/>
+
+    <TextView
+        android:id="@+id/tv_main_grid_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="40sp"
+        android:textColor="@color/black"
+        android:text="1"/>
+
+    <TextView
+        android:id="@+id/tv_main_grid_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/tv_main_grid_data"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="15dp"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:text="级南风"/>
+
+</RelativeLayout>

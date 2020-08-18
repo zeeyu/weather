@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/tv_main_day_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:text="9月10日明天"/>
+
+    <ImageView
+        android:id="@+id/iv_main_day_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_weight="1"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/ic_cloudy"/>
+    
+    <View
+        android:layout_width="1.5dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_main_day_air"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="5dp"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:text="良"/>
+
+    <TextView
+        android:id="@+id/tv_main_day_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:text="14°/12°"/>
+
+</LinearLayout>
