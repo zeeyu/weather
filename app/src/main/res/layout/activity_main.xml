@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <ImageView
+                android:id="@+id/iv_main_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_weather_background_sand" />
+
+            <include
+                android:id="@+id/ll_main_title"
+                layout="@layout/include_main_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"/>
+
+            <include
+                android:id="@+id/rl_main_info1"
+                layout="@layout/include_main_info1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_main_background"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="-100dp" />
+
+            <include
+                android:id="@+id/ll_main_info2"
+                layout="@layout/include_main_info2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_below="@id/iv_main_background"
+                android:layout_marginTop="20dp"/>
+
+            <include
+                android:id="@+id/ll_main_warning"
+                layout="@layout/include_main_warning"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/ll_main_info2"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_main_hour"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_below="@id/ll_main_warning"
+                android:background="@drawable/shape_white_round"
+                tools:listitem="@layout/item_list_main_hour" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_main_day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_below="@id/rv_main_hour"
+                android:background="@drawable/shape_white_round"
+                tools:listitem="@layout/item_list_main_day"/>
+
+            <include
+                android:id="@+id/iv_main_grid_wind"
+                layout="@layout/include_main_grid"
+                android:layout_width="180dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_below="@id/rv_main_day"/>
+
+            <include
+                android:id="@+id/iv_main_grid_humid"
+                layout="@layout/include_main_grid"
+                android:layout_width="180dp"
+                android:layout_height="150dp"
+                android:layout_below="@id/rv_main_day"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"/>
+
+            <include
+                android:id="@+id/iv_main_grid_uv"
+                layout="@layout/include_main_grid"
+                android:layout_width="180dp"
+                android:layout_height="150dp"
+                android:layout_below="@id/iv_main_grid_wind"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"/>
+
+            <include
+                android:id="@+id/iv_main_grid_visibility"
+                layout="@layout/include_main_grid"
+                android:layout_width="180dp"
+                android:layout_height="150dp"
+                android:layout_below="@id/iv_main_grid_wind"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
