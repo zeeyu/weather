@@ -6,16 +6,16 @@
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/tv_main_hour_time1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="10sp"
-        android:text="上午"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tv_main_hour_time1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="1"-->
+<!--        android:textSize="10sp"-->
+<!--        android:text="上午"/>-->
 
     <TextView
-        android:id="@+id/tv_main_hour_time2"
+        android:id="@+id/tv_main_hour_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -23,7 +23,7 @@
         android:text="9:00"/>
 
     <ImageView
-        android:id="@+id/iv_main_hour_icon"
+        android:id="@+id/iv_main_hour_weather"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_weight="1"

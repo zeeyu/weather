@@ -2,6 +2,7 @@ package com.xzy.weather.base;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,5 +22,5 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState, persistentState);
     }
 
-    public abstract void init();
+    protected abstract void init();
 }

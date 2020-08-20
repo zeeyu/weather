@@ -16,7 +16,7 @@
         android:text="9月10日明天"/>
 
     <ImageView
-        android:id="@+id/iv_main_day_icon"
+        android:id="@+id/iv_main_day_weather"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_weight="1"
@@ -39,7 +39,7 @@
         android:text="良"/>
 
     <TextView
-        android:id="@+id/tv_main_day_weather"
+        android:id="@+id/tv_main_day_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
