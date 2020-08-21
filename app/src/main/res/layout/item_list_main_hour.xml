@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="100dp"
+    android:layout_height="150dp"
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
@@ -19,8 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="10sp"
+        android:textSize="15sp"
         android:text="9:00"/>
+
+    <com.xzy.weather.weather.HourWeatherLineView
+        android:id="@+id/view_main_hour_line"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        android:layout_weight="4" />
 
     <ImageView
         android:id="@+id/iv_main_hour_weather"
@@ -36,13 +42,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black"
-        android:textSize="10sp"
+        android:textSize="15sp"
         android:text="26°"/>
 
     <TextView
         android:id="@+id/tv_main_hour_wind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp"
+        android:textSize="15sp"
         android:text="3级"/>
 </LinearLayout>

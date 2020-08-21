@@ -1,4 +1,4 @@
-package com.xzy.weather.adapter;
+package com.xzy.weather.weather;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +36,8 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
         TextView tvWind;
         @BindView(R.id.iv_main_hour_weather)
         ImageView ivWeather;
+        @BindView(R.id.view_main_hour_line)
+        HourWeatherLineView viewLine;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,6 +63,7 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
         holder.tvTemp.setText(hourlyBean.getTemp() + "°C");
         holder.tvTime.setText(TimeUtil.getHeFxTimeHour(hourlyBean.getFxTime()));
         holder.tvWind.setText(hourlyBean.getWindScale() + "级");
+
     }
 
     @Override

@@ -19,9 +19,12 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
-import com.xzy.weather.adapter.HourWeatherListAdapter;
+import com.xzy.weather.weather.DayWeatherListAdapter;
+import com.xzy.weather.weather.DayWeatherListDecoration;
+import com.xzy.weather.weather.HourWeatherListAdapter;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.util.PermissionUtil;
+import com.xzy.weather.weather.HourWeatherListDecoration;
 
 import java.util.List;
 
@@ -49,11 +52,11 @@ public class MainActivity extends BaseActivity {
 
     public GeoBean.LocationBean locationBean;
 
-    public WeatherNowBean.NowBaseBean nowBaseBean;
+    public WeatherNowBean.NowBaseBean weatherNowBaseBean;
 
     public List<WeatherHourlyBean.HourlyBean> hourlyBeanList;
 
-    public List<WeatherDailyBean.DailyBean> dailyBeanList;
+    public List<WeatherDailyBean.DailyBean> weatherDailyBeanList;
 
     public AirNowBean.NowBean nowBean;
 
@@ -86,6 +89,12 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.ll_main_warning)
     LinearLayout ll;
 
+    @BindView(R.id.tv_main_warning_info)
+    TextView tvWarningInfo;
+
+    @BindView(R.id.tv_main_warning_time)
+    TextView tvWarningTime;
+
     @BindView(R.id.rv_main_hour)
     RecyclerView rvHour;
 
@@ -113,21 +122,29 @@ public class MainActivity extends BaseActivity {
     private void updateView(){
         Log.d(TAG, "updateView");
         tvLocation.setText(locationBean.getName());
-        tvTemp.setText(nowBaseBean.getTemp());
-        tvType.setText(nowBaseBean.getText());
-        tvTempMax.setText(dailyBeanList.get(0).getTempMax() + "°C");
-        tvTempMin.setText(dailyBeanList.get(0).getTempMin() + "°C");
+        tvTemp.setText(weatherNowBaseBean.getTemp());
+        tvType.setText(weatherNowBaseBean.getText());
+        tvTempMax.setText(weatherDailyBeanList.get(0).getTempMax() + "°C");
+        tvTempMin.setText(weatherDailyBeanList.get(0).getTempMin() + "°C");
         tvAir.setText("空气" + nowBean.getCategory());
 
         if(warningBeanBaseList != null && warningBeanBaseList.size() != 0){
             ll.setVisibility(View.GONE);
+        } else {
+            //TODO
+            //tvWarningInfo.set
         }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvHour.setLayoutManager(layoutManager);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
+        layoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvHour.setLayoutManager(layoutManager1);
         rvHour.setAdapter(new HourWeatherListAdapter(hourlyBeanList));
-        //TODO UPDATE VIEW
+        rvHour.addItemDecoration(new HourWeatherListDecoration());
+
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
+        rvDay.setLayoutManager(layoutManager2);
+        rvDay.setAdapter(new DayWeatherListAdapter(weatherDailyBeanList, airDailyBeanList));
+        rvDay.addItemDecoration(new DayWeatherListDecoration());
     }
 
     /**
@@ -211,7 +228,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSuccess(WeatherNowBean weatherNowBean) {
                 Log.d(TAG, "Weather now onSuccess:" + new Gson().toJson(weatherNowBean));
-                nowBaseBean = weatherNowBean.getNow();
+                weatherNowBaseBean = weatherNowBean.getNow();
 
                 if(--eventCount == 0){
                     updateView();
@@ -263,7 +280,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSuccess(WeatherDailyBean weatherDailyBean) {
                 Log.d(TAG, "Weather7d onSuccess:" + new Gson().toJson(weatherDailyBean));
-                dailyBeanList = weatherDailyBean.getDaily();
+                weatherDailyBeanList = weatherDailyBean.getDaily();
 
                 if(--eventCount == 0){
                     updateView();

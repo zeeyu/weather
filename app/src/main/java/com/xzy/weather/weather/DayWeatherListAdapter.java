@@ -1,5 +1,6 @@
-package com.xzy.weather.adapter;
+package com.xzy.weather.weather;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xzy.weather.R;
+import com.xzy.weather.util.TimeUtil;
 
 import java.util.List;
 
@@ -51,13 +53,21 @@ public class DayWeatherListAdapter extends RecyclerView.Adapter<DayWeatherListAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //TODO 创建适配器
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_main_day, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        WeatherDailyBean.DailyBean weatherDailyBean = mWeatherDailyBeanList.get(position);
+        AirDailyBean.DailyBean airDailyBean = mAirDailyBeanList.get(position);
+        holder.tvTemp.setText(weatherDailyBean.getTempMax() + "°" +"/" + weatherDailyBean.getTempMin() + "°");
+        holder.tvAir.setText(airDailyBean.getCategory());
 
+        String fxDate = weatherDailyBean.getFxDate();
+        String[] date = fxDate.split("-");
+        holder.tvDate.setText(date[1] + "月" + date[2] + "日" + TimeUtil.getWeek(TimeUtil.strToDate(fxDate)));
     }
 
     @Override
