@@ -2,6 +2,7 @@ package com.xzy.weather;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,8 @@ import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
 import com.xzy.weather.weather.DayWeatherListAdapter;
 import com.xzy.weather.weather.DayWeatherListDecoration;
+import com.xzy.weather.weather.GridListAdapter;
+import com.xzy.weather.weather.GridListDecoration;
 import com.xzy.weather.weather.HourWeatherListAdapter;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.util.PermissionUtil;
@@ -101,6 +105,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.rv_main_day)
     RecyclerView rvDay;
 
+    @BindView(R.id.rv_main_grid)
+    RecyclerView rvGrid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,12 +146,23 @@ public class MainActivity extends BaseActivity {
         layoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvHour.setLayoutManager(layoutManager1);
         rvHour.setAdapter(new HourWeatherListAdapter(hourlyBeanList));
-        rvHour.addItemDecoration(new HourWeatherListDecoration());
+        rvHour.addItemDecoration(new HourWeatherListDecoration(hourlyBeanList));
+        rvHour.setItemViewCacheSize(hourlyBeanList.size());
 
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
         rvDay.setLayoutManager(layoutManager2);
         rvDay.setAdapter(new DayWeatherListAdapter(weatherDailyBeanList, airDailyBeanList));
         rvDay.addItemDecoration(new DayWeatherListDecoration());
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        rvGrid.setLayoutManager(gridLayoutManager);
+        rvGrid.setAdapter(new GridListAdapter(weatherNowBaseBean, weatherDailyBeanList.get(0)));
+        rvGrid.post(new Runnable() {
+            @Override
+            public void run() {
+                rvGrid.addItemDecoration(new GridListDecoration(rvGrid.getMeasuredWidth(), rvGrid.getChildAt(0).getWidth()));
+            }
+        });
     }
 
     /**

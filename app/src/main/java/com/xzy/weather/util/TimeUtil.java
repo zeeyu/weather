@@ -48,28 +48,45 @@ public class TimeUtil {
 
     /**
      * 计算两个日期的天数间隔
-     * @param date1 日期1 YYYY-mm-dd
+     * @param date1 日期1 yyyy-MM-dd
      * @param date2 日期2
      * @return 天数间隔
      */
     public static int getIntervalDay(@NotNull String date1, @NotNull String date2){
-        return Math.abs(getIntervalDay(date1) - getIntervalDay(date2));
+        return getIntervalDay(date1) - getIntervalDay(date2);
     }
 
     /**
      * 计算两个时间的小时间隔
-     * @param time1 hh:mm
-     * @param time2 hh:mm
-     * @return
+     * @param time1 yyyy-MM-ddThh:mm+hh:mm
+     * @param time2
+     * @return 单位h
      */
     public static float getIntervalHour(String time1, String time2){
+        String hour1 = getHeFxTimeHour(time1);
+        String hour2 = getHeFxTimeHour(time2);
+
+        int day = getIntervalDay(getHeFxTimeDate(time1), getHeFxTimeDate(time2));
         float hour = 0;
-        String[] t1 = time1.split(":");
-        String[] t2 = time2.split(":");
+
+        if(day < 0){
+            String temp = time1;
+            time1 = time2;
+            time2 = temp;
+        }
+
+        String[] t1 = hour1.split(":");
+        String[] t2 = hour2.split(":");
         int h1 = Integer.valueOf(t1[0]);
-        int m1 = Integer.valueOf(t1[1]);
+        float m1 = Integer.valueOf(t1[1]);
         int h2 = Integer.valueOf(t2[0]);
-        int m2 = Integer.valueOf(t2[1]);
+        float m2 = Integer.valueOf(t2[1]);
+
+        if(m1 < m2){
+            hour = (h1 - h2 - 1) + (m1 + 60 - m2) / 60.0f;
+        } else {
+            hour = (h1 - h2) + (m1 - m2) / 60.0f;
+        }
         return hour;
     }
 

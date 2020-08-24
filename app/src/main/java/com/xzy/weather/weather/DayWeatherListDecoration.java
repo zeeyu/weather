@@ -16,7 +16,7 @@ public class DayWeatherListDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        outRect.set(5, 15, 5 ,15);
+        outRect.set(5, 20, 5 ,20);
     }
 
     @Override

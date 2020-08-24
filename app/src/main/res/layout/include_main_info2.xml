@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/black"
         android:text="28°C"/>
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/black"
         android:text="14°C"/>
 
     <TextView
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:textSize="20sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/black"
         android:text="空气良"/>
 
 </LinearLayout>

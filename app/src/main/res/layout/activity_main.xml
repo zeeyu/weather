@@ -53,7 +53,7 @@
                 android:layout_height="60dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_below="@id/ll_main_info2"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -61,7 +61,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_below="@id/ll_main_warning"
                 android:background="@drawable/shape_white_round"
@@ -72,53 +72,73 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_below="@id/rv_main_hour"
                 android:background="@drawable/shape_white_round"
                 tools:listitem="@layout/item_list_main_day"/>
 
-            <include
-                android:id="@+id/iv_main_grid_wind"
-                layout="@layout/include_main_grid"
-                android:layout_width="180dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="10dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_main_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_below="@id/rv_main_day"/>
-
-            <include
-                android:id="@+id/iv_main_grid_humid"
-                layout="@layout/include_main_grid"
-                android:layout_width="180dp"
-                android:layout_height="150dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_below="@id/rv_main_day"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"/>
+                tools:listitem="@layout/item_list_main_grid"/>
 
-            <include
-                android:id="@+id/iv_main_grid_uv"
-                layout="@layout/include_main_grid"
-                android:layout_width="180dp"
+            <com.xzy.weather.weather.SunView
+                android:id="@+id/view_main_sun"
+                android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_below="@id/iv_main_grid_wind"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"/>
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/shape_white_round"
+                android:layout_below="@id/rv_main_grid"/>
 
-            <include
-                android:id="@+id/iv_main_grid_visibility"
-                layout="@layout/include_main_grid"
-                android:layout_width="180dp"
-                android:layout_height="150dp"
-                android:layout_below="@id/iv_main_grid_wind"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"/>
+<!--            <include-->
+<!--                android:id="@+id/iv_main_grid_wind"-->
+<!--                layout="@layout/item_list_main_grid"-->
+<!--                android:layout_width="180dp"-->
+<!--                android:layout_height="150dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_below="@id/rv_main_day"/>-->
+
+<!--            <include-->
+<!--                android:id="@+id/iv_main_grid_humid"-->
+<!--                layout="@layout/item_list_main_grid"-->
+<!--                android:layout_width="180dp"-->
+<!--                android:layout_height="150dp"-->
+<!--                android:layout_below="@id/rv_main_day"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginEnd="20dp"-->
+<!--                android:layout_marginRight="20dp"/>-->
+
+<!--            <include-->
+<!--                android:id="@+id/iv_main_grid_uv"-->
+<!--                layout="@layout/item_list_main_grid"-->
+<!--                android:layout_width="180dp"-->
+<!--                android:layout_height="150dp"-->
+<!--                android:layout_below="@id/iv_main_grid_wind"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginLeft="20dp"/>-->
+
+<!--            <include-->
+<!--                android:id="@+id/iv_main_grid_visibility"-->
+<!--                layout="@layout/item_list_main_grid"-->
+<!--                android:layout_width="180dp"-->
+<!--                android:layout_height="150dp"-->
+<!--                android:layout_below="@id/iv_main_grid_wind"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginEnd="20dp"-->
+<!--                android:layout_marginRight="20dp"/>-->
 
         </RelativeLayout>
     </ScrollView>

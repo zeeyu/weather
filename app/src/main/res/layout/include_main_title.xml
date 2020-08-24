@@ -12,7 +12,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="20dp"
         android:text="深圳"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/black"
         android:textSize="30sp"
         />
 

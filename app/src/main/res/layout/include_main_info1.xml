@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100sp"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/black"
         android:includeFontPadding="false"
         android:textStyle="bold"
         android:text="28"/>
@@ -21,7 +21,7 @@
         android:text="°C"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@id/tv_main_info_temperature"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/black"
         android:textSize="50sp" />
 
     <TextView
