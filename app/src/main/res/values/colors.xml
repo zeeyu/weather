@@ -7,6 +7,9 @@
     <color name="white">#ffffff</color><!--白色 -->
     <color name="black">#000000</color><!--黑色 -->
 
+    <color name="gray_deep">#333333</color>
+    <color name="gray">#797979</color>
+
     <color name="orange_deep">#FF9100</color>
     <color name="orange">#FFAD3C</color>
     <color name="orange_light">#FFD977</color>

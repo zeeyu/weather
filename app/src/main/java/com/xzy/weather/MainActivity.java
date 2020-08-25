@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
+import com.xzy.weather.util.StringUtil;
 import com.xzy.weather.weather.DayWeatherListAdapter;
 import com.xzy.weather.weather.DayWeatherListDecoration;
 import com.xzy.weather.weather.GridListAdapter;
@@ -29,6 +32,7 @@ import com.xzy.weather.weather.HourWeatherListAdapter;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.util.PermissionUtil;
 import com.xzy.weather.weather.HourWeatherListDecoration;
+import com.xzy.weather.weather.SunView;
 
 import java.util.List;
 
@@ -72,6 +76,9 @@ public class MainActivity extends BaseActivity {
 
     public LocationClient mLocationClient;
 
+    @BindView(R.id.iv_main_background)
+    ImageView ivBackground;
+
     @BindView(R.id.tv_main_title_location)
     TextView tvLocation;
 
@@ -108,6 +115,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.rv_main_grid)
     RecyclerView rvGrid;
 
+    @BindView(R.id.view_main_sun)
+    SunView viewSun;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +125,17 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         init();
         Log.d(TAG, "onCreate");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        viewSun.setSun(null, null);
     }
 
     @Override
@@ -128,6 +149,9 @@ public class MainActivity extends BaseActivity {
 
     private void updateView(){
         Log.d(TAG, "updateView");
+
+        setBackground();
+
         tvLocation.setText(locationBean.getName());
         tvTemp.setText(weatherNowBaseBean.getTemp());
         tvType.setText(weatherNowBaseBean.getText());
@@ -135,7 +159,7 @@ public class MainActivity extends BaseActivity {
         tvTempMin.setText(weatherDailyBeanList.get(0).getTempMin() + "°C");
         tvAir.setText("空气" + nowBean.getCategory());
 
-        if(warningBeanBaseList != null && warningBeanBaseList.size() != 0){
+        if(warningBeanBaseList == null || warningBeanBaseList.size() == 0){
             ll.setVisibility(View.GONE);
         } else {
             //TODO
@@ -163,6 +187,15 @@ public class MainActivity extends BaseActivity {
                 rvGrid.addItemDecoration(new GridListDecoration(rvGrid.getMeasuredWidth(), rvGrid.getChildAt(0).getWidth()));
             }
         });
+
+        WeatherDailyBean.DailyBean bean = weatherDailyBeanList.get(0);
+        viewSun.setSun(bean.getSunrise(), bean.getSunset());
+    }
+
+    private void setBackground(){
+        String weather = weatherNowBaseBean.getText();
+        int id = getResources().getIdentifier("background_" + StringUtil.getWeatherName(weather), "drawable", "com.xzy.weather");
+        ivBackground.setBackground(getResources().getDrawable(id));
     }
 
     /**

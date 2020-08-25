@@ -48,22 +48,22 @@ public class HourWeatherLineView extends View {
        // Log.d(TAG, "onDraw " + index + " " + left + " " + right + " " + position);
 
         int width = getWidth();
-        int height = getHeight();
+        int height = getHeight() - 4 * CIRCLE_RADIUS;
 
         mPaint.setAlpha(255);
-        canvas.drawCircle(width / 2, height * position, CIRCLE_RADIUS, mPaint);
+        canvas.drawCircle(width / 2, CIRCLE_RADIUS * 2 + height * position, CIRCLE_RADIUS, mPaint);
 
         mPaint.setAlpha(100);
         if(!isStart) {
-            canvas.drawLine(0, height * left, width / 2 - CIRCLE_RADIUS, height * position, mPaint);
+            canvas.drawLine(0, CIRCLE_RADIUS * 2 + height * left, width / 2 - CIRCLE_RADIUS, CIRCLE_RADIUS * 2 + height * position, mPaint);
         }
 
         if(!isEnd) {
-            canvas.drawLine(width / 2 + CIRCLE_RADIUS, height * position, width, height * right, mPaint);
+            canvas.drawLine(width / 2 + CIRCLE_RADIUS, CIRCLE_RADIUS * 2 + height * position, width, CIRCLE_RADIUS * 2 + height * right, mPaint);
         }
 
         if(isNow){
-            canvas.drawCircle(width/2, height * position, CIRCLE_RADIUS * 2, mPaint);
+            canvas.drawCircle(width/2, CIRCLE_RADIUS * 2 + height * position, CIRCLE_RADIUS * 2, mPaint);
         }
     }
 

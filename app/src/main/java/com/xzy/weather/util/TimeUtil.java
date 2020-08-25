@@ -1,18 +1,24 @@
 package com.xzy.weather.util;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Author:xzy
  * Date:2020/8/20 19:50
  **/
 public class TimeUtil {
+
+    private static final String TAG = "TimeUtil";
 
     public static int[] MONTH_DAY_COUNT = {
             0,31,28,31,30,31,30,31,31,30,31,30,31
@@ -28,7 +34,7 @@ public class TimeUtil {
             return null;
         }
         String[] s1 = fxTime.split("T");
-        String[] s2 = s1.length > 1 ? s1[1].split("\\+") : null;
+        String[] s2 = s1.length > 1 ? s1[1].split("\\+") : s1[0].split("\\+");
 
         return s2 == null ? null : s2[0];
     }
@@ -43,7 +49,8 @@ public class TimeUtil {
             return null;
         }
         String[] s1 = fxTime.split("T");
-        return s1 == null ? null : s1[0].substring(s1[0].indexOf("-"));
+        if(s1 == null || s1[0].indexOf("-") == -1) return null;
+        return s1[0].substring(s1[0].indexOf("-"));
     }
 
     /**
@@ -52,35 +59,29 @@ public class TimeUtil {
      * @param date2 日期2
      * @return 天数间隔
      */
-    public static int getIntervalDay(@NotNull String date1, @NotNull String date2){
+    public static int getIntervalDay(String date1, String date2){
+        if(date1 == null || date2 == null){
+            return 0;
+        }
         return getIntervalDay(date1) - getIntervalDay(date2);
     }
 
     /**
      * 计算两个时间的小时间隔
-     * @param time1 yyyy-MM-ddThh:mm+hh:mm
-     * @param time2
+     * @param hour1 hh:mm
+     * @param hour2
      * @return 单位h
      */
-    public static float getIntervalHour(String time1, String time2){
-        String hour1 = getHeFxTimeHour(time1);
-        String hour2 = getHeFxTimeHour(time2);
-
-        int day = getIntervalDay(getHeFxTimeDate(time1), getHeFxTimeDate(time2));
-        float hour = 0;
-
-        if(day < 0){
-            String temp = time1;
-            time1 = time2;
-            time2 = temp;
-        }
-
+    public static float getIntervalHour(String hour1, String hour2){
+        Log.d(TAG, "getIntervalHour: " + hour1 + " " + hour2);
         String[] t1 = hour1.split(":");
         String[] t2 = hour2.split(":");
         int h1 = Integer.valueOf(t1[0]);
         float m1 = Integer.valueOf(t1[1]);
         int h2 = Integer.valueOf(t2[0]);
         float m2 = Integer.valueOf(t2[1]);
+
+        float hour;
 
         if(m1 < m2){
             hour = (h1 - h2 - 1) + (m1 + 60 - m2) / 60.0f;
@@ -90,12 +91,53 @@ public class TimeUtil {
         return hour;
     }
 
+//    public static float getIntervalHour(String time1, String time2){
+//        String hour1 = getHeFxTimeHour(time1);
+//        String hour2 = getHeFxTimeHour(time2);
+//
+//        int day = getIntervalDay(getHeFxTimeDate(time1), getHeFxTimeDate(time2));
+//        float hour = 0;
+//
+//        if(day < 0){
+//            String temp = time1;
+//            time1 = time2;
+//            time2 = temp;
+//        }
+//
+//        String[] t1 = hour1.split(":");
+//        String[] t2 = hour2.split(":");
+//        int h1 = Integer.valueOf(t1[0]);
+//        float m1 = Integer.valueOf(t1[1]);
+//        int h2 = Integer.valueOf(t2[0]);
+//        float m2 = Integer.valueOf(t2[1]);
+//
+//        if(m1 < m2){
+//            hour = (h1 - h2 - 1) + (m1 + 60 - m2) / 60.0f;
+//        } else {
+//            hour = (h1 - h2) + (m1 - m2) / 60.0f;
+//        }
+//        if(hour < 0){
+//            hour += 24;
+//            day--;
+//        }
+//        return day * 24 + hour;
+//    }
+
+    public static String getHourNow(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+    }
+
     /**
      * 计算指定日期到0000-01-01的天数
      * @param date 指定日期 YYYY-mm-dd
      * @return 天数间隔
      */
-    public static int getIntervalDay(@NotNull String date){
+    public static int getIntervalDay(String date){
+        if(date == null) {
+            return 0;
+        }
         int y1, m1, d1;
         int days = 0;
         String[] d = date.split("-");

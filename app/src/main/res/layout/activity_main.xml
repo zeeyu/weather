@@ -19,7 +19,7 @@
                 android:id="@+id/iv_main_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/main_weather_background_sand" />
+                android:background="@drawable/background_sand" />
 
             <include
                 android:id="@+id/ll_main_title"
