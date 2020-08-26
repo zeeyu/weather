@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Author:xzy
  * Date:2020/8/19 10:35
  **/
-public class Location {
+public class MyLocationBean {
 
     @SerializedName("id")
     String id;
@@ -30,11 +30,11 @@ public class Location {
 
     boolean isCommon; //是否为常用位置
 
-    public Location(){
+    public MyLocationBean(){
 
     }
 
-    public Location(String id, String name, String country, String province, String city, String type, boolean isLocal, boolean isCommon){
+    public MyLocationBean(String id, String name, String country, String province, String city, String type, boolean isLocal, boolean isCommon){
         this.id = id;
         this.name = name;
         this.country = country;

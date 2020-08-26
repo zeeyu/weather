@@ -6,5 +6,4 @@ package com.xzy.weather.util;
  **/
 public class JsonUtil {
 
-
 }

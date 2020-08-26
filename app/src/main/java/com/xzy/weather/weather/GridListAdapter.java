@@ -1,5 +1,6 @@
 package com.xzy.weather.weather;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xzy.weather.R;
+import com.xzy.weather.bean.MyWeatherNowBean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,15 +24,14 @@ import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherNowBean;
  **/
 public class GridListAdapter extends RecyclerView.Adapter<GridListAdapter.ViewHolder> {
 
+    private Context mContext;
+
     private String[] types = {"风力风向", "湿度", "紫外线指数", "能见度"};
-
     private String[] units = {"级", "%", "级", "km"};
-
     private String[] data = new String[4];
+    private int[] resource = {R.drawable.ic_wind, R.drawable.ic_humidity, R.drawable.ic_uv, R.drawable.ic_visibility};
 
-    private WeatherNowBean.NowBaseBean mWeatherNowBaseBean;
-
-    private WeatherDailyBean.DailyBean mWeatherDailyBean;
+    private MyWeatherNowBean mWeatherNowBean;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -49,24 +50,24 @@ public class GridListAdapter extends RecyclerView.Adapter<GridListAdapter.ViewHo
         }
     }
 
-    public GridListAdapter(WeatherNowBean.NowBaseBean nowBaseBean, WeatherDailyBean.DailyBean dailyBean){
-        this.mWeatherNowBaseBean = nowBaseBean;
-        this.mWeatherDailyBean = dailyBean;
+    public GridListAdapter(MyWeatherNowBean weatherNowBean){
+        this.mWeatherNowBean = weatherNowBean;
 
-        data[0] = nowBaseBean.getWindScale();
-        units[0] = "级" + nowBaseBean.getWindDir();
+        data[0] = weatherNowBean.getWindScale();
+        units[0] = "级" + weatherNowBean.getWindDir();
 
-        data[1] = nowBaseBean.getHumidity();
+        data[1] = weatherNowBean.getHumidity();
 
-        data[2] = dailyBean.getUvIndex();
+        data[2] = weatherNowBean.getUv();
 
-        data[3] = nowBaseBean.getVis();
+        data[3] = weatherNowBean.getVis();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_main_grid, parent, false);
+        mContext = parent.getContext();
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_list_main_grid, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -76,6 +77,7 @@ public class GridListAdapter extends RecyclerView.Adapter<GridListAdapter.ViewHo
         holder.tvData.setText(data[position]);
         holder.tvType.setText(types[position]);
         holder.tvUnit.setText(units[position]);
+        holder.ivIcon.setImageDrawable(mContext.getResources().getDrawable(resource[position]));
     }
 
     @Override

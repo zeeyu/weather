@@ -34,7 +34,7 @@ public class GridListDecoration extends RecyclerView.ItemDecoration {
 
         if(position % 2 == 1){
             outRect.left = mViewWidth - mItemWidth * 2;
-            Log.d(TAG, "getItemOffsets: " + outRect.left + " " + mViewWidth + " " + mItemWidth);
+            //Log.d(TAG, "getItemOffsets: " + outRect.left + " " + mViewWidth + " " + mItemWidth);
         }
     }
 }

@@ -108,7 +108,7 @@ public class SunView extends View {
             pos = 1;
         }
         midAngel = startAngle + pos * sweepAngle;
-        Log.d(TAG, "setSun :" + TimeUtil.getIntervalHour(sunrise, sunset) + " " + TimeUtil.getIntervalHour(sunrise, now) + " " + pos);
+        //Log.d(TAG, "setSun :" + TimeUtil.getIntervalHour(sunrise, sunset) + " " + TimeUtil.getIntervalHour(sunrise, now) + " " + pos);
 
         startAnimator();
 //        new Thread(new Runnable() {

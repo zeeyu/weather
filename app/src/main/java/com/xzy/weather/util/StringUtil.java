@@ -16,14 +16,31 @@ public class StringUtil {
                 return "overcast";
             case "雨":
                 return "rainy";
+            case "阵雨":
+                return "rainy_shower";
+            case "小雨":
+                return "rainy_light";
+            case "中雨":
+                return "rainy_mid";
+            case "大雨":
+                return "rainy_heavy";
+            case "暴雨":
+                return "rainy_rainstorm";
+            case "雷阵雨":
+                return "rainy_thunder";
             case "雪":
                 return "snowy";
             case "雾":
                 return "foggy";
             case "霾":
                 return "hazy";
+
             default:
                 return "unknown";
         }
     }
+
+//    public static String getWarningName(String warning){
+//
+//    }
 }

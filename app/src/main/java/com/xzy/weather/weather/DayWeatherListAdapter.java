@@ -1,5 +1,8 @@
 package com.xzy.weather.weather;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xzy.weather.R;
+import com.xzy.weather.bean.MyWeatherBean;
+import com.xzy.weather.util.StringUtil;
 import com.xzy.weather.util.TimeUtil;
 
 import java.util.List;
@@ -25,8 +30,10 @@ import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherDailyBean;
  **/
 public class DayWeatherListAdapter extends RecyclerView.Adapter<DayWeatherListAdapter.ViewHolder> {
 
-    private List<WeatherDailyBean.DailyBean> mWeatherDailyBeanList;
-    private List<AirDailyBean.DailyBean> mAirDailyBeanList;
+    private static final String TAG = "DayWeatherListAdapter";
+
+    private Context mContext;
+    private List<MyWeatherBean> mWeatherDailyList;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -45,33 +52,38 @@ public class DayWeatherListAdapter extends RecyclerView.Adapter<DayWeatherListAd
         }
     }
 
-    public DayWeatherListAdapter(List<WeatherDailyBean.DailyBean> weatherDailyBeanList, List<AirDailyBean.DailyBean> airDailyBeanList){
-        mWeatherDailyBeanList = weatherDailyBeanList;
-        mAirDailyBeanList = airDailyBeanList;
+    public DayWeatherListAdapter(List<MyWeatherBean> weatherDailyList){
+        this.mWeatherDailyList = weatherDailyList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_main_day, parent, false);
+        mContext = parent.getContext();
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_list_main_day, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        WeatherDailyBean.DailyBean weatherDailyBean = mWeatherDailyBeanList.get(position);
-        AirDailyBean.DailyBean airDailyBean = mAirDailyBeanList.get(position);
-        holder.tvTemp.setText(weatherDailyBean.getTempMax() + "°" +"/" + weatherDailyBean.getTempMin() + "°");
-        holder.tvAir.setText(airDailyBean.getCategory());
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) throws Resources.NotFoundException {
+        MyWeatherBean weatherDailyBean = mWeatherDailyList.get(position);
 
-        String fxDate = weatherDailyBean.getFxDate();
+        holder.tvTemp.setText(weatherDailyBean.getTempMax() + "°" +"/" + weatherDailyBean.getTempMin() + "°");
+        holder.tvAir.setText(weatherDailyBean.getAir());
+
+        String fxDate = weatherDailyBean.getDate();
         String[] date = fxDate.split("-");
         holder.tvDate.setText(date[1] + "月" + date[2] + "日" + TimeUtil.getWeek(TimeUtil.strToDate(fxDate)));
+
+        String weather = weatherDailyBean.getText();
+       // Log.d(TAG, "weather: " + weather);
+        int id = mContext.getResources().getIdentifier("ic_" + StringUtil.getWeatherName(weather), "drawable", "com.xzy.weather");
+        holder.ivWeather.setImageDrawable(mContext.getResources().getDrawable(id));
     }
 
     @Override
     public int getItemCount() {
-        return Math.min(mWeatherDailyBeanList.size(), mAirDailyBeanList.size());
+        return mWeatherDailyList.size();
     }
 }

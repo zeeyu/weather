@@ -4,4 +4,6 @@
     <string name="sunrise">日出</string>
     <string name="sunset">日落</string>
 
+    <string name="update_minute">%1$d分钟前更新</string>
+    <string name="update_hour">%1$.1f小时前更新</string>
 </resources>

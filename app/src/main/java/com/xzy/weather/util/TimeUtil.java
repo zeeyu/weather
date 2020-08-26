@@ -42,7 +42,7 @@ public class TimeUtil {
     /**
      * 获取和风天气返回时间中的日期
      * @param fxTime 预报时间 yyyy-MM-ddThh:mm+hh:mm
-     * @return 时间 MM-dd
+     * @return 时间 yyyy-MM-dd
      */
     public static String getHeFxTimeDate(String fxTime){
         if(fxTime == null){
@@ -50,7 +50,7 @@ public class TimeUtil {
         }
         String[] s1 = fxTime.split("T");
         if(s1 == null || s1[0].indexOf("-") == -1) return null;
-        return s1[0].substring(s1[0].indexOf("-"));
+        return s1[0];
     }
 
     /**
@@ -69,59 +69,37 @@ public class TimeUtil {
     /**
      * 计算两个时间的小时间隔
      * @param hour1 hh:mm
-     * @param hour2
+     * @param date1 yyyy-MM-dd
      * @return 单位h
      */
-    public static float getIntervalHour(String hour1, String hour2){
-        Log.d(TAG, "getIntervalHour: " + hour1 + " " + hour2);
+    public static float getIntervalHour(String hour1, String hour2, String date1, String date2){
+        //Log.d(TAG, "getIntervalHour: " + hour1 + " " + hour2 + " " + date1 + " " + date2);
         String[] t1 = hour1.split(":");
         String[] t2 = hour2.split(":");
-        int h1 = Integer.valueOf(t1[0]);
-        float m1 = Integer.valueOf(t1[1]);
-        int h2 = Integer.valueOf(t2[0]);
-        float m2 = Integer.valueOf(t2[1]);
+        int h1 = Integer.parseInt(t1[0]);
+        float m1 = Integer.parseInt(t1[1]);
+        int h2 = Integer.parseInt(t2[0]);
+        float m2 = Integer.parseInt(t2[1]);
 
-        float hour;
+        float res1 = h1 + m1/60;
+        float res2 = h2 + m2/60;
 
-        if(m1 < m2){
-            hour = (h1 - h2 - 1) + (m1 + 60 - m2) / 60.0f;
-        } else {
-            hour = (h1 - h2) + (m1 - m2) / 60.0f;
-        }
-        return hour;
+        return Math.abs(getIntervalDay(date2) - getIntervalDay(date1) + res2 - res1);
     }
 
-//    public static float getIntervalHour(String time1, String time2){
-//        String hour1 = getHeFxTimeHour(time1);
-//        String hour2 = getHeFxTimeHour(time2);
-//
-//        int day = getIntervalDay(getHeFxTimeDate(time1), getHeFxTimeDate(time2));
-//        float hour = 0;
-//
-//        if(day < 0){
-//            String temp = time1;
-//            time1 = time2;
-//            time2 = temp;
-//        }
-//
-//        String[] t1 = hour1.split(":");
-//        String[] t2 = hour2.split(":");
-//        int h1 = Integer.valueOf(t1[0]);
-//        float m1 = Integer.valueOf(t1[1]);
-//        int h2 = Integer.valueOf(t2[0]);
-//        float m2 = Integer.valueOf(t2[1]);
-//
-//        if(m1 < m2){
-//            hour = (h1 - h2 - 1) + (m1 + 60 - m2) / 60.0f;
-//        } else {
-//            hour = (h1 - h2) + (m1 - m2) / 60.0f;
-//        }
-//        if(hour < 0){
-//            hour += 24;
-//            day--;
-//        }
-//        return day * 24 + hour;
-//    }
+    public static float getIntervalHour(String hour1, String hour2){
+        String[] t1 = hour1.split(":");
+        String[] t2 = hour2.split(":");
+        int h1 = Integer.parseInt(t1[0]);
+        float m1 = Integer.parseInt(t1[1]);
+        int h2 = Integer.parseInt(t2[0]);
+        float m2 = Integer.parseInt(t2[1]);
+
+        float res1 = h1 + m1/60;
+        float res2 = h2 + m2/60;
+
+        return Math.abs(res2 - res1);
+    }
 
     public static String getHourNow(){
         Calendar calendar = Calendar.getInstance();
@@ -129,13 +107,19 @@ public class TimeUtil {
         return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
     }
 
+    public static String getDateNow(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        return calendar.get(Calendar.YEAR) + "-" + (1+calendar.get(Calendar.MONTH)) + "-" + calendar.get(Calendar.DATE);
+    }
+
     /**
      * 计算指定日期到0000-01-01的天数
-     * @param date 指定日期 YYYY-mm-dd
+     * @param date 指定日期 yyyy-MM-dd
      * @return 天数间隔
      */
     public static int getIntervalDay(String date){
-        if(date == null) {
+        if(date == null || "".equals(date)) {
             return 0;
         }
         int y1, m1, d1;
@@ -146,9 +130,9 @@ public class TimeUtil {
             return 0;
         }
 
-        y1 = Integer.valueOf(d[0]) - 1;
-        m1 = Integer.valueOf(d[1]);
-        d1 = Integer.valueOf(d[2]);
+        y1 = Integer.parseInt(d[0]) - 1;
+        m1 = Integer.parseInt(d[1]);
+        d1 = Integer.parseInt(d[2]);
 
         days += y1 * 365 + (y1 / 4) + (y1 / 400) - (y1 / 100);
         y1++;
@@ -164,7 +148,7 @@ public class TimeUtil {
 
     /**
      * 日期字符串转换为Date
-     * @param strDate 日期 YYYY-mm-dd
+     * @param strDate 日期 yyyy-MM-dd
      * @return Date对象
      */
     public static Date strToDate(String strDate){
