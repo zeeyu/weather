@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_city_manage_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:text="深圳 南山区"/>
+
+    <ImageView
+        android:id="@+id/iv_city_manage_local"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/ic_location"/>
+
+    <TextView
+        android:id="@+id/tv_city_manage_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:text="09:32"/>
+
+</LinearLayout>

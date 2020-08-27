@@ -23,9 +23,6 @@ public class MyLocationBean {
     @SerializedName("adm1")
     String province;
 
-    @SerializedName("type")
-    String type;    //地区属性
-
     boolean isLocal;  //是否为当地
 
     boolean isCommon; //是否为常用位置
@@ -40,7 +37,6 @@ public class MyLocationBean {
         this.country = country;
         this.province = province;
         this.city = city;
-        this.type = type;
         this.isLocal = isLocal;
         this.isCommon = isCommon;
     }
@@ -83,14 +79,6 @@ public class MyLocationBean {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public boolean isLocal() {

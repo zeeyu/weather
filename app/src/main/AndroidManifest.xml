@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".warning.WarningActivity"></activity>
+        <activity android:name=".city.CityManageActivity"></activity>
+        <activity android:name=".warning.WarningActivity" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -34,7 +35,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
     </application>
 
 </manifest>

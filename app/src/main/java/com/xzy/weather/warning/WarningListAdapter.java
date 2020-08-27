@@ -70,7 +70,7 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
                 TimeUtil.getHeFxTimeDate(bean.getPubTime()), TimeUtil.getDateNow());
 
         if(hour < 1){
-            holder.tvTime.setText(String.format(mContext.getString(R.string.update_minute),hour*60));
+            holder.tvTime.setText(String.format(mContext.getString(R.string.update_minute),(int)(hour*60)));
         } else {
             holder.tvTime.setText(String.format(mContext.getString(R.string.update_hour),hour));
         }

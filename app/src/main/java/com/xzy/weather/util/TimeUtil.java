@@ -84,7 +84,7 @@ public class TimeUtil {
         float res1 = h1 + m1/60;
         float res2 = h2 + m2/60;
 
-        return Math.abs(getIntervalDay(date2) - getIntervalDay(date1) + res2 - res1);
+        return Math.abs(getIntervalDay(date2) - getIntervalDay(date1) + (res2 - res1 + 24)%24);
     }
 
     public static float getIntervalHour(String hour1, String hour2){
