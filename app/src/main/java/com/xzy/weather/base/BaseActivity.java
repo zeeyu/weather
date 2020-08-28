@@ -23,9 +23,10 @@ public abstract class BaseActivity extends AppCompatActivity{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        init();
+        initData();
     }
 
-    protected abstract void init();
+    protected abstract void initData();
 
+    protected abstract void initView();
 }

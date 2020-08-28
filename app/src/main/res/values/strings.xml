@@ -10,6 +10,7 @@
     <string name="update_minute">%1$d分钟前更新</string>
     <string name="update_hour">%1$.1f小时前更新</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="HE_ID">HE2008191124411841</string>
+    <string name="HE_KEY">1303d8f41ae24186b5de7055a0b0e2a4</string>
+
 </resources>

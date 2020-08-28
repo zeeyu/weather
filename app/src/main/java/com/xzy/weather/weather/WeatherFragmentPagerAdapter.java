@@ -1,6 +1,7 @@
 package com.xzy.weather.weather;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,16 +23,23 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
 
     public WeatherFragmentPagerAdapter(@NonNull FragmentManager fm, List<WeatherFragment> list) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        this.list = list;
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return null;
+        return list.get(position);
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return list.size();
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        return super.instantiateItem(container, position);
     }
 }

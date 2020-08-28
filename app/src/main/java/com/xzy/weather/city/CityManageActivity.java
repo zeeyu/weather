@@ -1,6 +1,5 @@
 package com.xzy.weather.city;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,10 +26,16 @@ public class CityManageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_manage);
         ButterKnife.bind(this);
+        initData();
     }
 
     @Override
-    protected void init() {
+    protected void initData() {
+        initView();
+    }
+
+    @Override
+    protected void initView() {
 
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back));
         toolbar.setNavigationOnClickListener(v -> finish());

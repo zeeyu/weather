@@ -40,16 +40,19 @@ public class WarningActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warning);
         ButterKnife.bind(this);
-        init();
+        initData();
     }
 
     @Override
-    protected void init() {
+    protected void initData() {
         Intent intent = getIntent();
         String json = intent.getStringExtra("WarningList");
         warningBeanList = new Gson().fromJson(json, new TypeToken<ArrayList<MyWarningBean>>(){}.getType());
-        //Log.d(TAG, json);
+        initView();
+    }
 
+    @Override
+    protected void initView() {
         rvWarning.setLayoutManager(new LinearLayoutManager(this));
         rvWarning.setAdapter(new WarningListAdapter(warningBeanList));
         rvWarning.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -63,6 +66,5 @@ public class WarningActivity extends BaseActivity {
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back));
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setTitle(getString(R.string.label_warning));
-
     }
 }

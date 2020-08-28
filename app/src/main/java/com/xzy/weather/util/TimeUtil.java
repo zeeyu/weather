@@ -20,6 +20,8 @@ public class TimeUtil {
 
     private static final String TAG = "TimeUtil";
 
+    public static String DEFAULT_TIME = "1970-01-01 00:00";
+
     public static int[] MONTH_DAY_COUNT = {
             0,31,28,31,30,31,30,31,31,30,31,30,31
     };
@@ -29,11 +31,11 @@ public class TimeUtil {
      * @param fxTime 预报时间 yyyy-MM-ddThh:mm+hh:mm
      * @return 时间 hh:mm
      */
-    public static String getHeFxTimeHour(String fxTime){
+    public static String getTimeHour(String fxTime){
         if(fxTime == null){
             return null;
         }
-        String[] s1 = fxTime.split("T");
+        String[] s1 = fxTime.split("[T ]");
         String[] s2 = s1.length > 1 ? s1[1].split("\\+") : s1[0].split("\\+");
 
         return s2 == null ? null : s2[0];
@@ -44,11 +46,11 @@ public class TimeUtil {
      * @param fxTime 预报时间 yyyy-MM-ddThh:mm+hh:mm
      * @return 时间 yyyy-MM-dd
      */
-    public static String getHeFxTimeDate(String fxTime){
+    public static String getTimeDate(String fxTime){
         if(fxTime == null){
             return null;
         }
-        String[] s1 = fxTime.split("T");
+        String[] s1 = fxTime.split("[T ]");
         if(s1 == null || s1[0].indexOf("-") == -1) return null;
         return s1[0];
     }
@@ -101,16 +103,32 @@ public class TimeUtil {
         return Math.abs(res2 - res1);
     }
 
+    /**
+     * 获取当前时间
+     * @return hh:mm
+     */
     public static String getHourNow(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
     }
 
+    /**
+     * 获取当前日期
+     * @return yyyy-MM-dd
+     */
     public static String getDateNow(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
         return calendar.get(Calendar.YEAR) + "-" + (1+calendar.get(Calendar.MONTH)) + "-" + calendar.get(Calendar.DATE);
+    }
+
+    /**
+     * 获取当前日期+时间
+     * @return yyyy-MM-dd hh:mm
+     */
+    public static String getTimeNow(){
+        return getDateNow() + " " + getHourNow();
     }
 
     /**

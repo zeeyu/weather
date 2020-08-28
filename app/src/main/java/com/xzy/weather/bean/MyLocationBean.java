@@ -1,5 +1,7 @@
 package com.xzy.weather.bean;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -28,7 +30,6 @@ public class MyLocationBean {
     boolean isCommon; //是否为常用位置
 
     public MyLocationBean(){
-
     }
 
     public MyLocationBean(String id, String name, String country, String province, String city, String type, boolean isLocal, boolean isCommon){

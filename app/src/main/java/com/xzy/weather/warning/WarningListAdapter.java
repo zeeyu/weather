@@ -18,7 +18,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import interfaces.heweather.com.interfacesmodule.bean.WarningBean;
 
 /**
  * Author:xzy
@@ -66,8 +65,8 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
         holder.tvType.setText(bean.getType() + bean.getLevel() + "预警");
 
         float hour = TimeUtil.getIntervalHour(
-                TimeUtil.getHeFxTimeHour(bean.getPubTime()), TimeUtil.getHourNow(),
-                TimeUtil.getHeFxTimeDate(bean.getPubTime()), TimeUtil.getDateNow());
+                TimeUtil.getTimeHour(bean.getPubTime()), TimeUtil.getHourNow(),
+                TimeUtil.getTimeDate(bean.getPubTime()), TimeUtil.getDateNow());
 
         if(hour < 1){
             holder.tvTime.setText(String.format(mContext.getString(R.string.update_minute),(int)(hour*60)));
