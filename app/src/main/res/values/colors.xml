@@ -8,6 +8,7 @@
 
     <color name="white">#ffffff</color><!--白色 -->
     <color name="black">#000000</color><!--黑色 -->
+    <color name="transparent">#00000000</color>
 
     <color name="gray_deep">#333333</color>
     <color name="gray">#797979</color>

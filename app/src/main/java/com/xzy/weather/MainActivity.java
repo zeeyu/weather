@@ -12,6 +12,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -87,16 +88,17 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     protected void initData() {
 
         locationList = DataStoreUtil.getLocationList(this);
 
         mLocationClient = new LocationClient(getApplicationContext());
         mLocationClient.registerLocationListener(new MyLocationListener());
-
-        for(MyLocationBean location : locationList){
-            fragments.add(new WeatherFragment(location));
-        }
 
         getPermissions();
     }
@@ -105,12 +107,17 @@ public class MainActivity extends BaseActivity {
     protected void initView(){
         StatusBarUtil.setTranslucentForImageView(this, 100, ivBackground);
 
+        for(MyLocationBean location : locationList){
+            fragments.add(new WeatherFragment(location));
+        }
+
+        DataStoreUtil.setLocationList(this, locationList);
+
         initSelector();
         initViewPager();
 
         ivCity.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CityManageActivity.class);
-            intent.putExtra("LocationList", new Gson().toJson(locationList));
             startActivity(intent);
         });
     }

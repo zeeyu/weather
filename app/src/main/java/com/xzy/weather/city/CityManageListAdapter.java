@@ -11,9 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xzy.weather.R;
+import com.xzy.weather.bean.MyLocationBean;
+import com.xzy.weather.bean.MyWeatherBean;
+import com.xzy.weather.bean.MyWeatherNowBean;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherNowBean;
 
 /**
  * Author:xzy
@@ -22,6 +28,10 @@ import butterknife.ButterKnife;
 public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAdapter.ViewHolder> {
 
     private Context mContext;
+
+    private List<MyLocationBean> locationList;
+    private List<MyWeatherNowBean> weatherNowList;
+    private List<MyWeatherBean> weatherList;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -48,6 +58,12 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         }
     }
 
+    public CityManageListAdapter(List<MyLocationBean> locationList, List<MyWeatherNowBean> weatherNowList, List<MyWeatherBean> weatherList){
+        this.locationList = locationList;
+        this.weatherNowList = weatherNowList;
+        this.weatherList = weatherList;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -58,11 +74,17 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        holder.tvTemp.setText(weatherNowList.get(position).getTemp());
+        holder.tvType.setText(weatherNowList.get(position).getText());
+        holder.tvAir.setText(weatherList.get(position).getAir());
+        holder.tvMax.setText(weatherList.get(position).getTempMax());
+        holder.tvMin.setText(weatherList.get(position).getTempMin());
+        holder.tvTime.setText(weatherList.get(position).getTime());
+        holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return locationList.size();
     }
 }

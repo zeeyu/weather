@@ -94,7 +94,6 @@ public class WeatherFragment extends BaseFragment {
 
     public WeatherFragment(MyLocationBean location){
         this.location = location;
-        initData();
     }
 
     void initData(){
@@ -130,7 +129,8 @@ public class WeatherFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        Log.d(TAG, "onViewCreated");
+        initData();
+        Log.d(TAG, "onViewCreated" + location);
     }
 
     @Override
@@ -151,6 +151,16 @@ public class WeatherFragment extends BaseFragment {
         updateWeather7dView();
         updateWeather24hView();
         updateWeatherGridView();
+
+        storageData();
+    }
+
+    synchronized private void storageData(){
+        DataStoreUtil.setLocationInfoUpdateTime(getContext(), location.getId());
+        DataStoreUtil.setWarning(getContext(), location.getId(), warningList);
+        DataStoreUtil.setWeather7d(getContext(), location.getId(), weatherDailyList);
+        DataStoreUtil.setWeather24h(getContext(), location.getId(), weatherHourlyList);
+        DataStoreUtil.setWeatherNow(getContext(), location.getId(), weatherNow);
     }
 
     private void updateWeatherNowView(){
@@ -165,6 +175,7 @@ public class WeatherFragment extends BaseFragment {
     private void updateWeather24hView(){
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext());
         layoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvHour.setNestedScrollingEnabled(false);
         rvHour.setLayoutManager(layoutManager1);
         rvHour.setAdapter(new HourWeatherListAdapter(weatherHourlyList));
         rvHour.addItemDecoration(new HourWeatherListDecoration());
@@ -172,7 +183,13 @@ public class WeatherFragment extends BaseFragment {
     }
 
     private void updateWeather7dView(){
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        rvDay.setNestedScrollingEnabled(false);
         rvDay.setLayoutManager(layoutManager2);
         rvDay.setAdapter(new DayWeatherListAdapter(weatherDailyList));
         rvDay.addItemDecoration(new DayWeatherListDecoration());
