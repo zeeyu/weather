@@ -2,15 +2,10 @@ package com.xzy.weather;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -33,6 +28,7 @@ import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.PermissionUtil;
 import com.xzy.weather.util.StringUtil;
+import com.xzy.weather.weather.WeatherFragment;
 import com.xzy.weather.weather.WeatherFragmentPagerAdapter;
 
 import java.util.ArrayList;

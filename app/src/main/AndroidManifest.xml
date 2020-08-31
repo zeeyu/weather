@@ -18,9 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".city.CityManageActivity"></activity>
-        <activity android:name=".warning.WarningActivity" />
+        <activity
+            android:name=".city.CityAddActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"/>
+        <activity
+            android:name=".city.CityManageActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"/>
+        <activity
+            android:name=".warning.WarningActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

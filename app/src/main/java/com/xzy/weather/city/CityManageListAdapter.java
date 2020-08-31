@@ -33,6 +33,8 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
     private List<MyWeatherNowBean> weatherNowList;
     private List<MyWeatherBean> weatherList;
 
+    OnItemClickListener listener;
+
     static class ViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R.id.tv_city_manage_temp)
@@ -81,10 +83,22 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         holder.tvMin.setText(weatherList.get(position).getTempMin());
         holder.tvTime.setText(weatherList.get(position).getTime());
         holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
+
+        if(listener != null){
+            listener.onClick(position);
+        }
     }
 
     @Override
     public int getItemCount() {
         return locationList.size();
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
+    }
+
+    interface OnItemClickListener{
+        public void onClick(int position);
     }
 }

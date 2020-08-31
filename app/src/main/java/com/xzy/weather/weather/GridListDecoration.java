@@ -7,6 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xzy.weather.util.DensityUtil;
+
 /**
  * Author:xzy
  * Date:2020/8/24 15:54
@@ -25,7 +27,7 @@ public class GridListDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state){
         super.getItemOffsets(outRect, view, parent, state);
 
         int position = parent.getChildLayoutPosition(view);
@@ -33,7 +35,7 @@ public class GridListDecoration extends RecyclerView.ItemDecoration {
         outRect.bottom = 20;
 
         if(position % 2 == 1){
-            outRect.left = mViewWidth - mItemWidth * 2;
+            outRect.left = DensityUtil.px2dip(view.getContext(), mViewWidth - mItemWidth * 2);
             //Log.d(TAG, "getItemOffsets: " + outRect.left + " " + mViewWidth + " " + mItemWidth);
         }
     }

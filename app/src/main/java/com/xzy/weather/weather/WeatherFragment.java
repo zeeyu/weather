@@ -1,4 +1,4 @@
-package com.xzy.weather;
+package com.xzy.weather.weather;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.xzy.weather.R;
 import com.xzy.weather.base.BaseFragment;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.MyWarningBean;

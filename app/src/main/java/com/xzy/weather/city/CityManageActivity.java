@@ -4,8 +4,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
@@ -59,11 +62,22 @@ public class CityManageActivity extends BaseActivity {
     @Override
     protected void initView() {
 
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back));
+        Drawable icBack = getResources().getDrawable(R.drawable.ic_back);
+        icBack.setBounds(0, 0, 100, 100);
+        toolbar.setNavigationIcon(icBack);
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setTitle(getString(R.string.label_city_manage));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new CityManageListAdapter(locationList, weatherNowList, weatherList));
+        CityManageListAdapter adapter = new CityManageListAdapter(locationList, weatherNowList, weatherList);
+        recyclerView.setAdapter(adapter);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CityManageActivity.this, CityAddActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
