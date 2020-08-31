@@ -15,6 +15,7 @@
 
     <string name="city_search">搜索国内外城市</string>
     <string name="top_city">推荐城市</string>
+    <string name="city_locating">定位中</string>
     <string name="get_location_failed">定位失败，点击重试</string>
     <string name="cancel">取消</string>
 
