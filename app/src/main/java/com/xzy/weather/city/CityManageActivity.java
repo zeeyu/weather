@@ -72,12 +72,9 @@ public class CityManageActivity extends BaseActivity {
         CityManageListAdapter adapter = new CityManageListAdapter(locationList, weatherNowList, weatherList);
         recyclerView.setAdapter(adapter);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CityManageActivity.this, CityAddActivity.class);
-                startActivity(intent);
-            }
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(CityManageActivity.this, CityAddActivity.class);
+            startActivity(intent);
         });
     }
 }

@@ -24,6 +24,8 @@ public class SearchEditText extends androidx.appcompat.widget.AppCompatEditText 
     private Drawable imgSearch;
     private Drawable imgCancel;
 
+    private OnTextChangeListener mListener;
+
     public SearchEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
@@ -50,6 +52,7 @@ public class SearchEditText extends androidx.appcompat.widget.AppCompatEditText 
             @Override
             public void afterTextChanged(Editable s) {
                 setDrawable();
+                mListener.afterChanged();
             }
         });
     }
@@ -65,15 +68,23 @@ public class SearchEditText extends androidx.appcompat.widget.AppCompatEditText 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(imgCancel != null && event.getAction() == MotionEvent.ACTION_DOWN){
-            Log.d(TAG, "onTouchEvent: " + event.getX() + " " + event.getY());
+            //Log.d(TAG, "onTouchEvent: " + event.getX() + " " + event.getY());
             Rect rect = new Rect();
             getLocalVisibleRect(rect);
-            Log.d(TAG, "onTouchEvent: " + rect);
+            //Log.d(TAG, "onTouchEvent: " + rect);
             rect.left = rect.right - 50;
             if(rect.contains((int)event.getX(), (int)event.getY())){
                 setText("");
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    public void setOnTextChangedListener(OnTextChangeListener l){
+        mListener = l;
+    }
+
+    public interface OnTextChangeListener {
+        void afterChanged();
     }
 }

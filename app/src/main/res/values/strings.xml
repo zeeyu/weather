@@ -1,11 +1,11 @@
 <resources>
+    <string name="HE_ID">HE2008191124411841</string>
+    <string name="HE_KEY">1303d8f41ae24186b5de7055a0b0e2a4</string>
+
     <string name="app_name">天气</string>
     <string name="label_warning">预警详情</string>
     <string name="label_city_manage">城市管理</string>
     <string name="label_city_add">城市添加</string>
-
-    <string name="HE_ID">HE2008191124411841</string>
-    <string name="HE_KEY">1303d8f41ae24186b5de7055a0b0e2a4</string>
 
     <string name="sunrise">日出</string>
     <string name="sunset">日落</string>
@@ -14,9 +14,13 @@
     <string name="update_hour">%1$.1f小时前更新</string>
 
     <string name="city_search">搜索国内外城市</string>
-    <string name="top_city">推荐城市</string>
+    <string name="city_top">推荐城市</string>
     <string name="city_locating">定位中</string>
     <string name="get_location_failed">定位失败，点击重试</string>
     <string name="cancel">取消</string>
+
+    <string name="city_history">搜索历史</string>
+    <string name="clear_history">清除历史</string>
+    <string name="city_search_failed">没有匹配的城市</string>
 
 </resources>

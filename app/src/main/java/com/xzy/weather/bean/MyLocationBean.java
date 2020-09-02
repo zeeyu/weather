@@ -42,6 +42,50 @@ public class MyLocationBean {
         this.isCommon = isCommon;
     }
 
+    public MyLocationBean(String id, String name, String country, String province, String city, String type){
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.province = province;
+        this.city = city;
+        this.isLocal = false;
+        this.isCommon = false;
+    }
+
+    /**
+     * 获取完整地址字符串
+     * @return 格式 [区-市-省，国家]
+     */
+    public String getFullAddress(){
+        StringBuilder sb = new StringBuilder("");
+        boolean first = true;
+        if(name != null){
+            sb.append(name);
+            first = false;
+        }
+        if(city != null && !city.equals(name)){
+            if(!first){
+                sb.append("-");
+            }
+            first = false;
+            sb.append(city);
+        }
+        if(province != null && !province.equals(city)){
+            if(!first){
+                sb.append("-");
+            }
+            first = false;
+            sb.append(province);
+        }
+        if(country != null){
+            if(!first){
+                sb.append(",");
+            }
+            sb.append(country);
+        }
+        return sb.toString();
+    }
+
     public String getId() {
         return id;
     }

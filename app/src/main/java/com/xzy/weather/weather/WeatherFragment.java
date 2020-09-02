@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,15 +24,9 @@ import com.xzy.weather.bean.MyWarningBean;
 import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
 import com.xzy.weather.util.DataStoreUtil;
+import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.TimeUtil;
 import com.xzy.weather.warning.WarningActivity;
-import com.xzy.weather.weather.DayWeatherListAdapter;
-import com.xzy.weather.weather.DayWeatherListDecoration;
-import com.xzy.weather.weather.GridListAdapter;
-import com.xzy.weather.weather.GridListDecoration;
-import com.xzy.weather.weather.HourWeatherListAdapter;
-import com.xzy.weather.weather.HourWeatherListDecoration;
-import com.xzy.weather.weather.SunView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,16 +34,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import interfaces.heweather.com.interfacesmodule.bean.WarningBean;
-import interfaces.heweather.com.interfacesmodule.bean.air.AirDailyBean;
-import interfaces.heweather.com.interfacesmodule.bean.air.AirNowBean;
-import interfaces.heweather.com.interfacesmodule.bean.base.Lang;
-import interfaces.heweather.com.interfacesmodule.bean.geo.GeoBean;
-import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherDailyBean;
-import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherHourlyBean;
-import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherNowBean;
-import interfaces.heweather.com.interfacesmodule.view.HeConfig;
-import interfaces.heweather.com.interfacesmodule.view.HeWeather;
 
 public class WeatherFragment extends BaseFragment {
 
@@ -97,15 +80,15 @@ public class WeatherFragment extends BaseFragment {
         this.location = location;
     }
 
-    void initData(){
+    private void initData(){
 
         Log.d(TAG, "initData");
-        String time = DataStoreUtil.getLocationInfoUpdateTime(getContext(), location.getId());
+        String time = DataStoreUtil.getLocationInfoUpdateTime(getApplicationContext(), location.getId());
         if(TimeUtil.getIntervalHour(TimeUtil.getHourNow(), TimeUtil.getTimeHour(time), TimeUtil.getDateNow(), TimeUtil.getTimeDate(time)) < 0.1f){
-            weatherNow = DataStoreUtil.getWeatherNow(getContext(), location.getId());
-            weatherHourlyList = DataStoreUtil.getWeather24h(getContext(), location.getId());
-            weatherDailyList = DataStoreUtil.getWeather7d(getContext(), location.getId());
-            warningList = DataStoreUtil.getWarning(getContext(), location.getId());
+            weatherNow = DataStoreUtil.getWeatherNow(getApplicationContext(), location.getId());
+            weatherHourlyList = DataStoreUtil.getWeather24h(getApplicationContext(), location.getId());
+            weatherDailyList = DataStoreUtil.getWeather7d(getApplicationContext(), location.getId());
+            warningList = DataStoreUtil.getWarning(getApplicationContext(), location.getId());
             updateView();
         } else {
             for(int i = 0; i < 7; i++){
@@ -131,7 +114,6 @@ public class WeatherFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         initData();
-        Log.d(TAG, "onViewCreated" + location);
     }
 
     @Override
@@ -140,6 +122,10 @@ public class WeatherFragment extends BaseFragment {
     }
 
     private void updateView(){
+        if(atomicInteger.getAndDecrement() != 1) {
+            return;
+        }
+
         Log.d(TAG, "updateView");
 
         if(warningList == null || warningList.size() == 0){
@@ -157,11 +143,11 @@ public class WeatherFragment extends BaseFragment {
     }
 
     synchronized private void storageData(){
-        DataStoreUtil.setLocationInfoUpdateTime(getContext(), location.getId());
-        DataStoreUtil.setWarning(getContext(), location.getId(), warningList);
-        DataStoreUtil.setWeather7d(getContext(), location.getId(), weatherDailyList);
-        DataStoreUtil.setWeather24h(getContext(), location.getId(), weatherHourlyList);
-        DataStoreUtil.setWeatherNow(getContext(), location.getId(), weatherNow);
+        DataStoreUtil.setLocationInfoUpdateTime(getApplicationContext(), location.getId());
+        DataStoreUtil.setWarning(getApplicationContext(), location.getId(), warningList);
+        DataStoreUtil.setWeather7d(getApplicationContext(), location.getId(), weatherDailyList);
+        DataStoreUtil.setWeather24h(getApplicationContext(), location.getId(), weatherHourlyList);
+        DataStoreUtil.setWeatherNow(getApplicationContext(), location.getId(), weatherNow);
     }
 
     private void updateWeatherNowView(){
@@ -232,163 +218,18 @@ public class WeatherFragment extends BaseFragment {
 
         String location = this.location.getId();
 
-        HeConfig.init(getString(R.string.HE_ID), getString(R.string.HE_KEY));
-        HeConfig.switchToDevService();
-
         atomicInteger.set(6);
 
-        HeWeather.getWeatherNow(getContext(), location, new HeWeather.OnResultWeatherNowListener(){
+        HeWeatherUtil.getWeatherNow(getApplicationContext(), location, weatherNow, this::updateView);
 
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "Weather now onError:", throwable);
-            }
+        HeWeatherUtil.getAirNow(getApplicationContext(), location, weatherNow, this::updateView);
 
-            @Override
-            public void onSuccess(WeatherNowBean weatherNowBean) {
-                Log.d(TAG, "Weather now onSuccess:" + new Gson().toJson(weatherNowBean));
-                WeatherNowBean.NowBaseBean weatherNowBaseBean = weatherNowBean.getNow();
+        HeWeatherUtil.getWeather24Hourly(getApplicationContext(), location, weatherHourlyList, this::updateView);
 
-                weatherNow.setTemp(weatherNowBaseBean.getTemp());
-                weatherNow.setText(weatherNowBaseBean.getText());
-                weatherNow.setHumidity(weatherNowBaseBean.getHumidity());
-                weatherNow.setVis(weatherNowBaseBean.getVis());
-                weatherNow.setWindDir(weatherNowBaseBean.getWindDir());
-                weatherNow.setWindScale(weatherNowBaseBean.getWindScale());
+        HeWeatherUtil.getWeather7D(getApplicationContext(), location, weatherNow, weatherDailyList, this::updateView);
 
-                if(atomicInteger.getAndDecrement() == 1) {
-                    updateView();
-                }
-            }
-        });
+        HeWeatherUtil.getAir5D(getApplicationContext(), location, weatherDailyList, this::updateView);
 
-        HeWeather.getAirNow(getContext(), location, Lang.ZH_HANS, new HeWeather.OnResultAirNowListener(){
-
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "Air now onError:", throwable);
-            }
-
-            @Override
-            public void onSuccess(AirNowBean airNowBean) {
-                Log.d(TAG, "Air now onSuccess:" + new Gson().toJson(airNowBean));
-                AirNowBean.NowBean nowBean = airNowBean.getNow();
-
-                weatherNow.setAir(nowBean.getCategory());
-
-                if(atomicInteger.getAndDecrement() == 1) {
-                    updateView();
-                }
-            }
-        });
-
-        HeWeather.getWeather24Hourly(getContext(), location, new HeWeather.OnResultWeatherHourlyListener() {
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "Weather hourly onError:", throwable);
-            }
-
-            @Override
-            public void onSuccess(WeatherHourlyBean weatherHourlyBean) {
-                Log.d(TAG, "Weather hourly onSuccess:" + new Gson().toJson(weatherHourlyBean));
-                List<WeatherHourlyBean.HourlyBean> beanList = weatherHourlyBean.getHourly();
-                for(int i = 0; i < beanList.size(); i++){
-                    WeatherHourlyBean.HourlyBean bean = beanList.get(i);
-
-                    weatherHourlyList.get(i).setTime(TimeUtil.getTimeHour(bean.getFxTime()));
-                    weatherHourlyList.get(i).setTemp(bean.getTemp());
-                    weatherHourlyList.get(i).setWindScale(bean.getWindScale());
-                    weatherHourlyList.get(i).setText(bean.getText());
-                }
-
-                if(atomicInteger.getAndDecrement() == 1) {
-                    updateView();
-                }
-            }
-        });
-
-        HeWeather.getWeather7D(getContext(), location, new HeWeather.OnResultWeatherDailyListener() {
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "Weather7d onError:", throwable);
-            }
-
-            @Override
-            public void onSuccess(WeatherDailyBean weatherDailyBean) {
-                Log.d(TAG, "Weather7d onSuccess:" + new Gson().toJson(weatherDailyBean));
-
-                List<WeatherDailyBean.DailyBean> beanList = weatherDailyBean.getDaily();
-                for(int i = 0; i < beanList.size(); i++){
-
-                    WeatherDailyBean.DailyBean bean = beanList.get(i);
-
-                    if(i == 0) {
-                        weatherNow.setUv(bean.getUvIndex());
-                        weatherNow.setSunrise(bean.getSunrise());
-                        weatherNow.setSunset(bean.getSunset());
-                    }
-
-                    weatherDailyList.get(i).setDate(bean.getFxDate());
-                    weatherDailyList.get(i).setTempMax(bean.getTempMax());
-                    weatherDailyList.get(i).setTempMin(bean.getTempMin());
-                    weatherDailyList.get(i).setText(bean.getTextDay());
-                }
-
-                if(atomicInteger.getAndDecrement() == 1) {
-                    updateView();
-                }
-            }
-        });
-
-        HeWeather.getAir5D(getContext(), location, Lang.ZH_HANS, new HeWeather.OnResultAirDailyListener() {
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "Air5d onError:", throwable);
-            }
-
-            @Override
-            public void onSuccess(AirDailyBean airDailyBean) {
-                Log.d(TAG, "Air5d onSuccess:" + new Gson().toJson(airDailyBean));
-                List<AirDailyBean.DailyBean> beanList = airDailyBean.getAirDaily();
-                for(int i = 0; i < beanList.size(); i++){
-                    AirDailyBean.DailyBean bean = beanList.get(i);
-
-                    weatherDailyList.get(i).setAir(bean.getCategory());
-                }
-
-                if(atomicInteger.getAndDecrement() == 1) {
-                    updateView();
-                }
-            }
-        });
-
-        HeWeather.getWarning(getContext(), location, new HeWeather.OnResultWarningListener() {
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "Warning onError:", throwable);
-            }
-
-            @Override
-            public void onSuccess(WarningBean warningBean) {
-                Log.d(TAG, "Warning onSuccess:" + new Gson().toJson(warningBean));
-
-                for(WarningBean.WarningBeanBase base : warningBean.getBeanBaseList()){
-
-                    MyWarningBean bean = new MyWarningBean();
-                    bean.setPubTime(base.getPubTime());
-                    bean.setLevel(base.getLevel());
-                    bean.setText(base.getText());
-                    bean.setType(base.getTypeName());
-                    bean.setTitle(base.getTitle());
-                    bean.setSender(base.getSender());
-
-                    warningList.add(bean);
-                }
-
-                if(atomicInteger.getAndDecrement() == 1) {
-                    updateView();
-                }
-            }
-        });
+        HeWeatherUtil.getWarning(getApplicationContext(), location, warningList, this::updateView);
     }
 }

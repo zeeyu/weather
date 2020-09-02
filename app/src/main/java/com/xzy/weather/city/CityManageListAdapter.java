@@ -83,7 +83,6 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         holder.tvMin.setText(weatherList.get(position).getTempMin());
         holder.tvTime.setText(weatherList.get(position).getTime());
         holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
-
         if(listener != null){
             listener.onClick(position);
         }

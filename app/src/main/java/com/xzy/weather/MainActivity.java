@@ -26,6 +26,7 @@ import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.city.CityManageActivity;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.util.DataStoreUtil;
+import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.PermissionUtil;
 import com.xzy.weather.util.StringUtil;
 import com.xzy.weather.weather.WeatherFragment;
@@ -107,6 +108,7 @@ public class MainActivity extends BaseActivity {
             fragments.add(new WeatherFragment(location));
         }
 
+        Log.d(TAG, "initView: " + new Gson().toJson(locationList));
         DataStoreUtil.setLocationList(this, locationList);
 
         initSelector();
@@ -208,43 +210,19 @@ public class MainActivity extends BaseActivity {
 
     public void getHeWeatherData(String location){
 
-        HeConfig.init(getString(R.string.HE_ID), getString(R.string.HE_KEY));
-        HeConfig.switchToDevService();
-
-        HeWeather.getGeoCityLookup(this, location, new HeWeather.OnResultGeoListener() {
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d(TAG, "getGeoCityLookup onError:");
-            }
-
-            @Override
-            public void onSuccess(GeoBean geoBean) {
-                Log.d(TAG, "onSuccess: " + new Gson().toJson(geoBean));
-
-                onReceiveLocationData(geoBean);
-            }
-        });
+        MyLocationBean myLocationBean = new MyLocationBean();
+        HeWeatherUtil.getGeoCityLookup(this.getApplicationContext(), location, myLocationBean, () -> onReceiveLocationData(myLocationBean));
     }
 
     /**
      * 处理和风天气返回的位置信息
      */
-    public void onReceiveLocationData(GeoBean geoBean){
-        GeoBean.LocationBean locationBean;
-        MyLocationBean myLocationBean = new MyLocationBean();
-
-        if(geoBean.getLocationBean().size() > 0) {
-            locationBean = geoBean.getLocationBean().get(0);
-
-            myLocationBean.setId(locationBean.getId());
-            myLocationBean.setCity(locationBean.getAdm2());
-            myLocationBean.setName(locationBean.getName());
-            myLocationBean.setProvince(locationBean.getAdm1());
-
-            if(locationList == null){
+    public void onReceiveLocationData(MyLocationBean myLocationBean){
+        if(myLocationBean != null) {
+            if (locationList == null) {
                 locationList = new ArrayList<>();
             }
-            if(locationList.size() == 0 || !locationList.get(0).getId().equals(myLocationBean.getId())){
+            if (locationList.size() == 0 || locationList.get(0).getId() == null ||!locationList.get(0).getId().equals(myLocationBean.getId())) {
                 //TODO 添加对话框
                 displayLocal = true;
                 locationList.add(0, myLocationBean);

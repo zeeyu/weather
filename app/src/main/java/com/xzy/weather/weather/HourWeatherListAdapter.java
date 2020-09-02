@@ -61,8 +61,8 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
     public HourWeatherListAdapter(List<MyWeatherBean> hourlyList){
         mHourlyList = hourlyList;
         for(int i = 0; i < hourlyList.size(); i++){
-            maxTemp = Math.max(Integer.valueOf(hourlyList.get(i).getTemp()), maxTemp);
-            minTemp = Math.min(Integer.valueOf(hourlyList.get(i).getTemp()), minTemp);
+            maxTemp = Math.max(Integer.parseInt(hourlyList.get(i).getTemp()), maxTemp);
+            minTemp = Math.min(Integer.parseInt(hourlyList.get(i).getTemp()), minTemp);
         }
         init = new boolean[hourlyList.size()];
     }

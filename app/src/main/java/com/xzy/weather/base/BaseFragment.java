@@ -24,9 +24,19 @@ public class BaseFragment extends Fragment {
         return activity;
     }
 
+    public Context getApplicationContext(){
+        return MyApplication.getContext();
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         activity = getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        activity = null;
     }
 }
