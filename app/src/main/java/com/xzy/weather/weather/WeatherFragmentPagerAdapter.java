@@ -36,6 +36,8 @@ public class WeatherFragmentPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        return super.instantiateItem(container, position);
+        WeatherFragment fragment = (WeatherFragment) super.instantiateItem(container, position);
+        list.set(position, fragment);
+        return fragment;
     }
 }

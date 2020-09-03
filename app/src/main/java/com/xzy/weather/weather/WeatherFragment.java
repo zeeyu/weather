@@ -39,11 +39,11 @@ public class WeatherFragment extends BaseFragment {
 
     private static final String TAG = "WeatherFragment";
 
-    public MyWeatherNowBean weatherNow = new MyWeatherNowBean();
-    public List<MyWeatherBean> weatherDailyList = new ArrayList<>();
-    public List<MyWeatherBean> weatherHourlyList = new ArrayList<>();
-    public List<MyWarningBean> warningList = new ArrayList<>();
-    public MyLocationBean location = new MyLocationBean();
+    public MyWeatherNowBean weatherNow;
+    private List<MyWeatherBean> weatherDailyList = new ArrayList<>();
+    private List<MyWeatherBean> weatherHourlyList = new ArrayList<>();
+    private List<MyWarningBean> warningList = new ArrayList<>();
+    private MyLocationBean location = new MyLocationBean();
 
     private AtomicInteger atomicInteger = new AtomicInteger();  //和风天气请求事件计数，所有事件完成后更新界面
 
@@ -84,6 +84,10 @@ public class WeatherFragment extends BaseFragment {
 
         Log.d(TAG, "initData");
         String time = DataStoreUtil.getLocationInfoUpdateTime(getApplicationContext(), location.getId());
+        weatherNow = new MyWeatherNowBean();
+        weatherDailyList.clear();
+        weatherHourlyList.clear();
+        warningList.clear();
         if(TimeUtil.getIntervalHour(TimeUtil.getHourNow(), TimeUtil.getTimeHour(time), TimeUtil.getDateNow(), TimeUtil.getTimeDate(time)) < 0.1f){
             weatherNow = DataStoreUtil.getWeatherNow(getApplicationContext(), location.getId());
             weatherHourlyList = DataStoreUtil.getWeather24h(getApplicationContext(), location.getId());
@@ -219,6 +223,9 @@ public class WeatherFragment extends BaseFragment {
         String location = this.location.getId();
 
         atomicInteger.set(6);
+
+        weatherNow = new MyWeatherNowBean();
+        warningList.clear();
 
         HeWeatherUtil.getWeatherNow(getApplicationContext(), location, weatherNow, this::updateView);
 

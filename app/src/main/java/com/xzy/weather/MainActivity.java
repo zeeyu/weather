@@ -1,6 +1,7 @@
 package com.xzy.weather;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
@@ -116,7 +117,7 @@ public class MainActivity extends BaseActivity {
 
         ivCity.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CityManageActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         });
     }
 
@@ -149,7 +150,7 @@ public class MainActivity extends BaseActivity {
             public void onPageSelected(int position) {
 
                 MyLocationBean location = locationList.get(position);
-                tvLocation.setText(location.getName() + " " +location.getCity());
+                tvLocation.setText(location.getName());
 
                 String weather = fragments.get(position).weatherNow.getText();
                 int id = getResources().getIdentifier("background_" + StringUtil.getWeatherName(weather), "drawable", "com.xzy.weather");
@@ -168,6 +169,7 @@ public class MainActivity extends BaseActivity {
         });
 
         viewPager.setAdapter(new WeatherFragmentPagerAdapter(getSupportFragmentManager(), fragments));
+        viewPager.setCurrentItem(0);
     }
 
     /**
@@ -230,6 +232,16 @@ public class MainActivity extends BaseActivity {
             }
         }
         initView();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == 1){
+                initData();
+            }
+        }
     }
 
     @Override

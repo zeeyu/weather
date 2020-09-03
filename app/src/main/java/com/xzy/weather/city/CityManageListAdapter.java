@@ -19,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherNowBean;
 
 /**
  * Author:xzy
@@ -27,13 +26,11 @@ import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherNowBean;
  **/
 public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAdapter.ViewHolder> {
 
-    private Context mContext;
-
     private List<MyLocationBean> locationList;
     private List<MyWeatherNowBean> weatherNowList;
     private List<MyWeatherBean> weatherList;
 
-    OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -54,13 +51,13 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         @BindView(R.id.iv_city_manage_local)
         ImageView ivLocal;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    public CityManageListAdapter(List<MyLocationBean> locationList, List<MyWeatherNowBean> weatherNowList, List<MyWeatherBean> weatherList){
+    CityManageListAdapter(List<MyLocationBean> locationList, List<MyWeatherNowBean> weatherNowList, List<MyWeatherBean> weatherList){
         this.locationList = locationList;
         this.weatherNowList = weatherNowList;
         this.weatherList = weatherList;
@@ -69,7 +66,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        mContext = parent.getContext();
+        Context mContext = parent.getContext();
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_list_city_manage, parent, false);
         return new ViewHolder(view);
     }
@@ -91,6 +88,11 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
     @Override
     public int getItemCount() {
         return locationList.size();
+    }
+
+    void onDataChanged(){
+
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){

@@ -11,17 +11,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.MyWeatherBean;
-import com.xzy.weather.bean.MyWeatherNowBean;
 import com.xzy.weather.util.StringUtil;
-import com.xzy.weather.util.TimeUtil;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import interfaces.heweather.com.interfacesmodule.bean.weather.WeatherHourlyBean;
 
 /**
  * Author:xzy
@@ -34,9 +32,9 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
     private Context mContext;
 
     private List<MyWeatherBean> mHourlyList;
-    boolean[] init;
-    int maxTemp = -10000;
-    int minTemp = 10000;
+    private boolean[] init;
+    private int maxTemp = -10000;
+    private int minTemp = 10000;
 
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -52,13 +50,13 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
         @BindView(R.id.view_main_hour_line)
         HourWeatherLineView viewLine;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    public HourWeatherListAdapter(List<MyWeatherBean> hourlyList){
+    HourWeatherListAdapter(List<MyWeatherBean> hourlyList){
         mHourlyList = hourlyList;
         for(int i = 0; i < hourlyList.size(); i++){
             maxTemp = Math.max(Integer.parseInt(hourlyList.get(i).getTemp()), maxTemp);
@@ -72,8 +70,7 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext = parent.getContext();
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_list_main_hour, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -95,11 +92,11 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
         holder.ivWeather.setImageDrawable(mContext.getResources().getDrawable(id));
     }
 
-    float mid = -1;   //两个view连线的中点坐标
-    protected void drawLine(@NonNull HourWeatherListAdapter.ViewHolder holder, int position){
+    private float mid = -1;   //两个view连线的中点坐标
+    private void drawLine(@NonNull HourWeatherListAdapter.ViewHolder holder, int position){
         //Log.d(TAG, "drawLine: " + position);
 
-        float temp = Integer.valueOf(mHourlyList.get(position).getTemp());
+        float temp = Integer.parseInt(mHourlyList.get(position).getTemp());
         float pos = -1;
         float nextMid = -1;
         if(maxTemp == minTemp){
@@ -108,7 +105,7 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
             pos = (maxTemp - temp) / (maxTemp - minTemp);
         }
         if(position != mHourlyList.size() - 1){
-            float nextTemp = Integer.valueOf(mHourlyList.get(position + 1).getTemp());
+            float nextTemp = Integer.parseInt(mHourlyList.get(position + 1).getTemp());
             float nextPos = (maxTemp - nextTemp) / (maxTemp - minTemp);
             nextMid = Math.abs((nextPos + pos)/2);
         }

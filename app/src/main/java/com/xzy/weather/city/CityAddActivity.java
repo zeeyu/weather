@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +26,7 @@ import com.google.gson.Gson;
 import com.xzy.weather.R;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.bean.MyLocationBean;
+import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.SystemUtil;
 
@@ -113,6 +115,7 @@ public class CityAddActivity extends BaseActivity {
 
         adapter = new CitySearchListAdapter(searchCityList);
         searchListViewHolder.rvSearch.setAdapter(adapter);
+        adapter.setOnItemClickListener(position -> updateCityList(searchCityList.get(position)));
         searchListViewHolder.rvSearch.setLayoutManager(new LinearLayoutManager(this));
 
         edSearch.setOnTextChangedListener(() -> {
@@ -155,12 +158,7 @@ public class CityAddActivity extends BaseActivity {
         GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), 3);
         topViewHolder.rvTop.setLayoutManager(manager);
         CityTopListAdapter adapter = new CityTopListAdapter(topCityList);
-        adapter.setOnItemClickListener(new CityTopListAdapter.OnItemClickListener() {
-            @Override
-            public void OnClick(int position) {
-                //TODO
-            }
-        });
+        adapter.setOnItemClickListener(position -> updateCityList(topCityList.get(position)));
         topViewHolder.rvTop.setAdapter(adapter);
         topViewHolder.rvTop.post(() -> topViewHolder.rvTop.addItemDecoration(new CityTopListDecoration(topViewHolder.rvTop.getWidth(), topViewHolder.rvTop.getChildAt(0).getWidth())));
     }
@@ -173,6 +171,20 @@ public class CityAddActivity extends BaseActivity {
         } else {
             changeView(searchListViewHolder.llSearchList);
         }
+    }
+
+    public void updateCityList(MyLocationBean newCity){
+        List<MyLocationBean> cityList = DataStoreUtil.getLocationList(this);
+        for(MyLocationBean city : cityList){
+            if(city.getId().equals(newCity.getId())){
+                Toast.makeText(this, getString(R.string.city_added), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        cityList.add(newCity);
+        DataStoreUtil.setLocationList(getApplicationContext(), cityList);
+        setResult(1);
+        finish();
     }
 
     public void getHeTopCity(){
@@ -204,7 +216,7 @@ public class CityAddActivity extends BaseActivity {
     }
 
     /**
-     * 接收位置信息，通过位置申请天气信息
+     * 接收位置信息
      */
     public class MyLocationListener extends BDAbstractLocationListener {
 

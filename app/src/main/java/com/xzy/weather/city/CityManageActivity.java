@@ -1,5 +1,6 @@
 package com.xzy.weather.city;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,23 +41,25 @@ public class CityManageActivity extends BaseActivity {
     volatile private List<MyWeatherBean> weatherList = new ArrayList<>();
     volatile private List<MyWeatherNowBean> weatherNowList = new ArrayList<>();
 
+    CityManageListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_manage);
         ButterKnife.bind(this);
         initData();
+        initView();
     }
 
     @Override
     protected void initData(){
         locationList = DataStoreUtil.getLocationList(this);
-        Log.d(TAG, "initData " + new Gson().toJson(locationList));
+        //Log.d(TAG, "initData " + new Gson().toJson(locationList));
         for(MyLocationBean locationBean : locationList){
             weatherList.add(DataStoreUtil.getWeather7d(this, locationBean.getId()).get(0));
             weatherNowList.add(DataStoreUtil.getWeatherNow(this, locationBean.getId()));
         }
-        initView();
     }
 
     @Override
@@ -69,12 +72,24 @@ public class CityManageActivity extends BaseActivity {
         toolbar.setTitle(getString(R.string.label_city_manage));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        CityManageListAdapter adapter = new CityManageListAdapter(locationList, weatherNowList, weatherList);
+        adapter = new CityManageListAdapter(locationList, weatherNowList, weatherList);
+        recyclerView.addItemDecoration(new CityManageListDecoration());
         recyclerView.setAdapter(adapter);
 
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(CityManageActivity.this, CityAddActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == 1){
+                setResult(1);
+                finish();
+            }
+        }
     }
 }

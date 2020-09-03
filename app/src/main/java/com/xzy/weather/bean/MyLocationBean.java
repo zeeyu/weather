@@ -11,23 +11,23 @@ import com.google.gson.annotations.SerializedName;
 public class MyLocationBean {
 
     @SerializedName("id")
-    String id;
+    private String id;
 
     @SerializedName("name")
-    String name;
+    private String name;
 
     @SerializedName("country")
-    String country;
+    private String country;
 
     @SerializedName("adm2")
-    String city;
+    private String city;
 
     @SerializedName("adm1")
-    String province;
+    private String province;
 
-    boolean isLocal;  //是否为当地
+    private boolean isLocal;  //是否为当地
 
-    boolean isCommon; //是否为常用位置
+    private boolean isCommon; //是否为常用位置
 
     public MyLocationBean(){
     }
@@ -52,12 +52,17 @@ public class MyLocationBean {
         this.isCommon = false;
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return super.equals(obj);
+    }
+
     /**
      * 获取完整地址字符串
      * @return 格式 [区-市-省，国家]
      */
     public String getFullAddress(){
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         boolean first = true;
         if(name != null){
             sb.append(name);
