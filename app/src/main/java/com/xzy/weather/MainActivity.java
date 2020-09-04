@@ -3,6 +3,7 @@ package com.xzy.weather;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -11,7 +12,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,9 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import interfaces.heweather.com.interfacesmodule.bean.geo.GeoBean;
-import interfaces.heweather.com.interfacesmodule.view.HeConfig;
-import interfaces.heweather.com.interfacesmodule.view.HeWeather;
 
 public class MainActivity extends BaseActivity {
 
@@ -58,6 +58,8 @@ public class MainActivity extends BaseActivity {
     ViewPager viewPager;
     @BindView(R.id.ll_main_selector)
     LinearLayout llSelector;
+//    @BindView(R.id.srl_main)
+//    SwipeRefreshLayout swipeRefreshLayout;
 
     public LocationClient mLocationClient;
 
@@ -153,7 +155,7 @@ public class MainActivity extends BaseActivity {
                 tvLocation.setText(location.getName());
 
                 String weather = fragments.get(position).weatherNow.getText();
-                int id = getResources().getIdentifier("background_" + StringUtil.getWeatherName(weather), "drawable", "com.xzy.weather");
+                int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");
                 ivBackground.setBackground(getResources().getDrawable(id));
 
                 for(int i = 0; i < llSelector.getChildCount(); i++) {
@@ -167,7 +169,6 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-
         viewPager.setAdapter(new WeatherFragmentPagerAdapter(getSupportFragmentManager(), fragments));
         viewPager.setCurrentItem(0);
     }

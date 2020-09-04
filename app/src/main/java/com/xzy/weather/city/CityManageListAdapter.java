@@ -50,6 +50,8 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         TextView tvTime;
         @BindView(R.id.iv_city_manage_local)
         ImageView ivLocal;
+        @BindView(R.id.iv_city_manage_remove)
+        ImageView ivRemove;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,7 +83,10 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         holder.tvTime.setText(weatherList.get(position).getTime());
         holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
         if(listener != null){
-            listener.onClick(position);
+            holder.itemView.setOnLongClickListener(v -> {
+                listener.onLongClick(holder, position);
+                return false;
+            });
         }
     }
 
@@ -90,16 +95,11 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         return locationList.size();
     }
 
-    void onDataChanged(){
-
-        notifyDataSetChanged();
-    }
-
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
 
     interface OnItemClickListener{
-        public void onClick(int position);
+        void onLongClick(ViewHolder viewHolder, int position);
     }
 }
