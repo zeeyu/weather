@@ -189,7 +189,6 @@ public class SunView extends View {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_sun);
         bitmap = BitmapUtil.resizeImage(bitmap, 30, 30);
         canvas.drawBitmap(bitmap, x_now, y_now - 15, mPaint);
-
     }
 
     public void startAnimator(){

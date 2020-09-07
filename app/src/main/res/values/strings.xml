@@ -23,5 +23,6 @@
     <string name="clear_history">清除历史</string>
     <string name="city_search_failed">没有匹配的城市</string>
     <string name="city_added">所选城市已存在</string>
+    <string name="edit">编辑</string>
 
 </resources>

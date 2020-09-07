@@ -26,21 +26,21 @@
                 <ImageView
                     android:id="@+id/iv_main_background"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="200dp"
                     app:layout_collapseMode="parallax"
                     android:background="@drawable/background_sand" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:layout_collapseMode="pin"
+                    android:layout_marginTop="20dp">
 
                     <include
                         android:id="@+id/ll_main_title"
                         layout="@layout/include_main_title"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_collapseMode="pin"
-                        android:layout_marginTop="20dp" />
+                        android:layout_height="wrap_content" />
 
                 </androidx.appcompat.widget.Toolbar>
 

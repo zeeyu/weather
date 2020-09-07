@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.xzy.weather.R;
@@ -31,16 +33,18 @@ public class CityManageActivity extends BaseActivity {
 
     private static final String TAG = "CityManageActivity";
 
-    private static final int MODE_NORMAL = 0;
-    private static final int MODE_EDIT = 1;
-    private int mode = MODE_NORMAL;
-
     @BindView(R.id.tb_city_manage)
-    Toolbar toolbar;
+    Toolbar tbNormal;
+    @BindView(R.id.tb_city_manage_edit)
+    Toolbar tbEdit;
     @BindView(R.id.rv_city_manage)
     RecyclerView recyclerView;
     @BindView(R.id.btn_city_manage_add)
     FloatingActionButton fab;
+    @BindView(R.id.iv_city_manage_ok)
+    ImageView ivOk;
+    @BindView(R.id.iv_city_manage_cancel)
+    ImageView ivCancel;
 
     private List<MyLocationBean> locationList;
     volatile private List<MyWeatherBean> weatherList = new ArrayList<>();
@@ -73,18 +77,17 @@ public class CityManageActivity extends BaseActivity {
 
         Drawable icBack = getResources().getDrawable(R.drawable.ic_back);
         icBack.setBounds(0, 0, 100, 100);
-        toolbar.setNavigationIcon(icBack);
-        toolbar.setNavigationOnClickListener(v -> finish());
-        toolbar.setTitle(getString(R.string.label_city_manage));
+        tbNormal.setNavigationIcon(icBack);
+        tbNormal.setNavigationOnClickListener(v -> finish());
+        tbNormal.setTitle(getString(R.string.label_city_manage));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         itemTouchHelper = new ItemTouchHelper(new MyCallback());
         itemTouchHelper.attachToRecyclerView(recyclerView);
         adapter = new CityManageListAdapter(locationList, weatherNowList, weatherList);
         adapter.setOnItemClickListener((viewHolder, position) -> {
-            if(mode == MODE_NORMAL){
-                //TODO
-            }
+            switchToEditMode();
+            Log.d(TAG, "onLongClick: " + position);
             if(position != 0){
                 itemTouchHelper.startDrag(viewHolder);
             }
@@ -95,6 +98,18 @@ public class CityManageActivity extends BaseActivity {
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(CityManageActivity.this, CityAddActivity.class);
             startActivityForResult(intent, 1);
+        });
+
+        ivOk.setOnClickListener(v -> {
+            adapter.delete();
+            setResult(1);
+            switchToNormalMode();
+            DataStoreUtil.setLocationList(this, locationList);
+        });
+
+        ivCancel.setOnClickListener(v -> {
+            adapter.redo();
+            switchToNormalMode();
         });
     }
 
@@ -111,10 +126,18 @@ public class CityManageActivity extends BaseActivity {
 
     private void switchToEditMode(){
         fab.hide();
-
+        tbNormal.setVisibility(View.INVISIBLE);
+        tbEdit.setVisibility(View.VISIBLE);
     }
 
-    private class MyCallback extends ItemTouchHelper.Callback{
+    private void switchToNormalMode(){
+        fab.show();
+        tbEdit.setVisibility(View.GONE);
+        tbNormal.setVisibility(View.VISIBLE);
+        adapter.notifyDataSetChanged();
+    }
+
+    private class MyCallback extends ItemTouchHelper.Callback {
 
         @Override
         public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
@@ -127,6 +150,9 @@ public class CityManageActivity extends BaseActivity {
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             int fromPosition = viewHolder.getAdapterPosition();
             int toPosition = target.getAdapterPosition();
+            if(fromPosition == 0 || toPosition == 0){
+                return false;
+            }
             if(fromPosition < toPosition) {
                 for(int i = fromPosition; i < toPosition; i++){
                     Collections.swap(locationList, i, i+1);
