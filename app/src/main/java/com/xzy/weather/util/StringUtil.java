@@ -21,10 +21,12 @@ public class StringUtil {
             case "小雨":
                 return "rainy_light";
             case "中雨":
+            case "小到中雨":
                 return "rainy_mid";
             case "大雨":
                 return "rainy_heavy";
             case "暴雨":
+            case "大到暴雨":
                 return "rainy_rainstorm";
             case "雷阵雨":
                 return "rainy_thunder";

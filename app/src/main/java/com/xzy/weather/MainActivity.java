@@ -2,6 +2,7 @@ package com.xzy.weather;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
@@ -12,9 +13,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,15 +23,14 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
-import com.jaeger.library.StatusBarUtil;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.city.CityManageActivity;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.PermissionUtil;
-import com.xzy.weather.util.StringUtil;
 import com.xzy.weather.weather.WeatherFragment;
 import com.xzy.weather.weather.WeatherFragmentPagerAdapter;
 
@@ -46,20 +44,21 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
-    @BindView(R.id.iv_main_background)
-    ImageView ivBackground;
     @BindView(R.id.iv_main_title_city)
     ImageView ivCity;
     @BindView(R.id.iv_main_title_setting)
     ImageView ivSetting;
     @BindView(R.id.tv_main_title_location)
     TextView tvLocation;
+
     @BindView(R.id.vp_main)
     ViewPager viewPager;
     @BindView(R.id.ll_main_selector)
     LinearLayout llSelector;
-//    @BindView(R.id.srl_main)
-//    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.appbar_main)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.srl_main)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public LocationClient mLocationClient;
 
@@ -105,7 +104,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView(){
-        StatusBarUtil.setTranslucentForImageView(this, 100, ivBackground);
+        //StatusBarUtil.setTranslucentForImageView(this, 100, ivBackground);
 
         for(MyLocationBean location : locationList){
             fragments.add(new WeatherFragment(location));
@@ -121,6 +120,32 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(MainActivity.this, CityManageActivity.class);
             startActivityForResult(intent, 1);
         });
+
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, i) -> {
+            if(i >= 0){
+                swipeRefreshLayout.setEnabled(true);
+            } else {
+                swipeRefreshLayout.setEnabled(false);
+            }
+        });
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d(TAG, "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     /**
@@ -142,7 +167,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initViewPager(){
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -154,11 +179,7 @@ public class MainActivity extends BaseActivity {
                 MyLocationBean location = locationList.get(position);
                 tvLocation.setText(location.getName());
 
-                String weather = fragments.get(position).weatherNow.getText();
-                int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");
-                ivBackground.setBackground(getResources().getDrawable(id));
-
-                for(int i = 0; i < llSelector.getChildCount(); i++) {
+                for (int i = 0; i < llSelector.getChildCount(); i++) {
                     llSelector.getChildAt(i).setSelected(false);
                 }
                 llSelector.getChildAt(position).setSelected(true);
@@ -168,9 +189,14 @@ public class MainActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        };
+        viewPager.addOnPageChangeListener(listener);
         viewPager.setAdapter(new WeatherFragmentPagerAdapter(getSupportFragmentManager(), fragments));
-        viewPager.setCurrentItem(0);
+        viewPager.postDelayed(() -> {
+            listener.onPageSelected(viewPager.getCurrentItem());
+            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
+            lp.topMargin = -appBarLayout.getHeight();
+        }, 1000);
     }
 
     /**
@@ -208,6 +234,8 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             getHeWeatherData(bdLocation.getLongitude() + "," + bdLocation.getLatitude());
+            mLocationClient.stop();
+            mLocationClient = null;
         }
     }
 

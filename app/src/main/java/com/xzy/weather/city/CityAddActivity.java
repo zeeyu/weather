@@ -174,7 +174,7 @@ public class CityAddActivity extends BaseActivity {
     }
 
     public void updateCityList(MyLocationBean newCity){
-        List<MyLocationBean> cityList = DataStoreUtil.getLocationList(this);
+        List<MyLocationBean> cityList = DataStoreUtil.getLocationList(getApplicationContext());
         for(MyLocationBean city : cityList){
             if(city.getId().equals(newCity.getId())){
                 Toast.makeText(this, getString(R.string.city_added), Toast.LENGTH_SHORT).show();

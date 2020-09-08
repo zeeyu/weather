@@ -1,77 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_scrollview_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".weather.WeatherFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+
         android:orientation="vertical">
 
-    <include
-        android:id="@+id/rl_main_info1"
-        layout="@layout/include_main_info1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp" />
+        <FrameLayout
+            android:id="@+id/fl_main_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/ll_main_info2"
-        layout="@layout/include_main_info2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"/>
+            <ImageView
+                android:id="@+id/iv_main_background"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/background_sand" />
 
-    <include
-        android:id="@+id/ll_main_warning"
-        layout="@layout/include_main_warning"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="100dp"
+                android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_main_hour"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_white_round"
-        tools:listitem="@layout/item_list_main_hour" />
+                <include
+                    android:id="@+id/rl_main_info1"
+                    layout="@layout/include_main_info1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_main_day"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_white_round"
-        tools:listitem="@layout/item_list_main_day"/>
+                <include
+                    android:id="@+id/ll_main_info2"
+                    layout="@layout/include_main_info2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" />
+            </LinearLayout>
+        </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_main_grid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        tools:listitem="@layout/item_list_main_grid"/>
+        <include
+            android:id="@+id/ll_main_warning"
+            layout="@layout/include_main_warning"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp" />
 
-    <com.xzy.weather.weather.SunView
-        android:id="@+id/view_main_sun"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/shape_white_round" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_main_hour"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/shape_white_round"
+            tools:listitem="@layout/item_list_main_hour" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_main_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/shape_white_round"
+            tools:listitem="@layout/item_list_main_day" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_main_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            tools:listitem="@layout/item_list_main_grid" />
+
+        <com.xzy.weather.weather.SunView
+            android:id="@+id/view_main_sun"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/shape_white_round" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

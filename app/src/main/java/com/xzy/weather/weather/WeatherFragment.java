@@ -1,10 +1,13 @@
 package com.xzy.weather.weather;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,6 +30,7 @@ import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
+import com.xzy.weather.util.StringUtil;
 import com.xzy.weather.util.TimeUtil;
 import com.xzy.weather.warning.WarningActivity;
 
@@ -39,24 +45,25 @@ public class WeatherFragment extends BaseFragment {
 
     private static final String TAG = "WeatherFragment";
 
+    private static final int DAYS_OF_WEEK = 7;
+    private static final int HOURS_OF_DAY = 24;
+    private static final int EVENT_COUNT = 7;
+    private static final float ALPHA_MAX = 1.0f;
+    private static final float ALPHA_MIN = 0;
+
     public MyWeatherNowBean weatherNow;
-    private List<MyWeatherBean> weatherDailyList = new ArrayList<>();
+    public List<MyWeatherBean> weatherDailyList = new ArrayList<>();
     private List<MyWeatherBean> weatherHourlyList = new ArrayList<>();
     private List<MyWarningBean> warningList = new ArrayList<>();
     private MyLocationBean location = new MyLocationBean();
 
     private AtomicInteger atomicInteger = new AtomicInteger();  //和风天气请求事件计数，所有事件完成后更新界面
 
-    @BindView(R.id.tv_main_info_temperature)
-    TextView tvTemp;
-    @BindView(R.id.tv_main_info_max)
-    TextView tvTempMax;
-    @BindView(R.id.tv_main_info_min)
-    TextView tvTempMin;
-    @BindView(R.id.tv_main_info_air)
-    TextView tvAir;
-    @BindView(R.id.tv_main_info_type)
-    TextView tvType;
+    @BindView(R.id.nested_scrollview_main)
+    NestedScrollView nestedScrollView;
+    @BindView(R.id.fl_main_title)
+    FrameLayout flTitle;
+
     @BindView(R.id.ll_main_warning)
     LinearLayout llWarning;
     @BindView(R.id.tv_main_warning_type)
@@ -71,6 +78,19 @@ public class WeatherFragment extends BaseFragment {
     RecyclerView rvGrid;
     @BindView(R.id.view_main_sun)
     SunView viewSun;
+
+    @BindView(R.id.iv_main_background)
+    ImageView ivBackground;
+    @BindView(R.id.tv_main_info_temperature)
+    TextView tvTemp;
+    @BindView(R.id.tv_main_info_max)
+    TextView tvTempMax;
+    @BindView(R.id.tv_main_info_min)
+    TextView tvTempMin;
+    @BindView(R.id.tv_main_info_air)
+    TextView tvAir;
+    @BindView(R.id.tv_main_info_type)
+    TextView tvType;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -93,12 +113,13 @@ public class WeatherFragment extends BaseFragment {
             weatherHourlyList = DataStoreUtil.getWeather24h(getApplicationContext(), location.getId());
             weatherDailyList = DataStoreUtil.getWeather7d(getApplicationContext(), location.getId());
             warningList = DataStoreUtil.getWarning(getApplicationContext(), location.getId());
+            atomicInteger.set(1);
             updateView();
         } else {
-            for(int i = 0; i < 7; i++){
+            for(int i = 0; i < DAYS_OF_WEEK; i++){
                 weatherDailyList.add(new MyWeatherBean());
             }
-            for(int i = 0; i < 24; i++){
+            for(int i = 0; i < HOURS_OF_DAY; i++){
                 weatherHourlyList.add(new MyWeatherBean());
             }
             getWeatherFromHeAPI();
@@ -130,7 +151,17 @@ public class WeatherFragment extends BaseFragment {
             return;
         }
 
-        Log.d(TAG, "updateView");
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                int height = flTitle.getHeight();
+                if (scrollY < height) {
+                    float scale = (float) scrollY / height;
+                    flTitle.setAlpha(ALPHA_MAX * (1 - scale));
+                } else {
+                    flTitle.setAlpha(ALPHA_MIN);
+                }
+            });
+        }
 
         if(warningList == null || warningList.size() == 0){
             llWarning.setVisibility(View.GONE);
@@ -160,6 +191,11 @@ public class WeatherFragment extends BaseFragment {
         tvTempMax.setText(weatherDailyList.get(0).getTempMax() + "°C");
         tvTempMin.setText(weatherDailyList.get(0).getTempMin() + "°C");
         tvAir.setText("空气" + weatherNow.getAir());
+
+        String weather = weatherNow.getText();
+        int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");
+        ivBackground.setBackground(getResources().getDrawable(id));
+
         viewSun.setSun(weatherNow.getSunrise(), weatherNow.getSunset());
     }
 
@@ -222,7 +258,7 @@ public class WeatherFragment extends BaseFragment {
 
         String location = this.location.getId();
 
-        atomicInteger.set(6);
+        atomicInteger.set(EVENT_COUNT - 1);
 
         weatherNow = new MyWeatherNowBean();
         warningList.clear();
