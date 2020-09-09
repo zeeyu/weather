@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".base.MyApplication"
@@ -20,14 +20,17 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".setting.SettingActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
+        <activity
             android:name=".city.CityAddActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"/>
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".city.CityManageActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"/>
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
         <activity
             android:name=".warning.WarningActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"/>
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout" />
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
@@ -36,7 +39,7 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
-            android:launchMode="singleInstance">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.city.CityManageActivity;
 import com.xzy.weather.base.BaseActivity;
+import com.xzy.weather.setting.SettingActivity;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.PermissionUtil;
@@ -119,6 +120,11 @@ public class MainActivity extends BaseActivity {
         ivCity.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CityManageActivity.class);
             startActivityForResult(intent, 1);
+        });
+
+        ivSetting.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+            startActivity(intent);
         });
 
         appBarLayout.addOnOffsetChangedListener((appBarLayout, i) -> {

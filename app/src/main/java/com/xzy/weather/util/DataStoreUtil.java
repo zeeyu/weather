@@ -9,6 +9,7 @@ import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.MyWarningBean;
 import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
+import com.xzy.weather.bean.SettingBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +29,7 @@ public class DataStoreUtil {
     private static String KEY_WEATHER_NOW = "weather_now";
     private static String KEY_WARNING = "warning";
     private static String KEY_UPDATE_TIME = "update_time";
+    private static String KEY_SETTING = "setting";
 
     /**
      * 保存城市列表
@@ -135,5 +137,22 @@ public class DataStoreUtil {
     public static String getLocationInfoUpdateTime(@NotNull Context context, String location){
         SharedPreferences sp = context.getSharedPreferences(location, Context.MODE_PRIVATE);
         return sp.getString(KEY_UPDATE_TIME, TimeUtil.DEFAULT_TIME);
+    }
+
+    synchronized public static void setSettingInfo(Context context, SettingBean setting) {
+        String json = new Gson().toJson(setting);
+        SharedPreferences sp = context.getSharedPreferences(KEY_SETTING, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(KEY_SETTING, json);
+        editor.apply();
+    }
+
+    public static SettingBean getSettingInfo(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(KEY_SETTING, Context.MODE_PRIVATE);
+        String json = sp.getString(KEY_SETTING, "");
+        if("".equals(json)){
+            return new SettingBean();
+        }
+        return new Gson().fromJson(json, SettingBean.class);
     }
 }

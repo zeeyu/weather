@@ -153,7 +153,7 @@ public class WeatherFragment extends BaseFragment {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                int height = flTitle.getHeight();
+                int height = flTitle.getHeight()/2;
                 if (scrollY < height) {
                     float scale = (float) scrollY / height;
                     flTitle.setAlpha(ALPHA_MAX * (1 - scale));

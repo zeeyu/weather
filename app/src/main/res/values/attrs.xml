@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SwitchBarItem">
+        <attr name="switch_text_title" format="string"/>
+        <attr name="switch_text_hint" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="SelectBarItem">
+        <attr name="select_text_title" format="string"/>
+        <attr name="select_text_info" format="string"/>
+    </declare-styleable>
+</resources>

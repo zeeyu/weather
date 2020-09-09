@@ -6,6 +6,7 @@
     <string name="label_warning">预警详情</string>
     <string name="label_city_manage">城市管理</string>
     <string name="label_city_add">城市添加</string>
+    <string name="label_setting">设置</string>
 
     <string name="sunrise">日出</string>
     <string name="sunset">日落</string>
@@ -24,5 +25,13 @@
     <string name="city_search_failed">没有匹配的城市</string>
     <string name="city_added">所选城市已存在</string>
     <string name="edit">编辑</string>
+
+    <string name="setting_weather_notify">天气通知提醒</string>
+    <string name="setting_weather_notify_hint">开启后，6:00至11:00将收到当前定位城市天气通知提醒</string>
+    <string name="setting_temp_unit">温度单位</string>
+    <string name="setting_auto_update">自动更新</string>
+    <string name="temperature_unit_c">°C</string>
+    <string name="temperature_unit_f">°F</string>
+    <string name="setting_auto_update_time">%1$d Hour</string>
 
 </resources>
