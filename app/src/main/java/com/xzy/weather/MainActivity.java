@@ -193,7 +193,6 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         };
         viewPager.addOnPageChangeListener(listener);
@@ -214,7 +213,7 @@ public class MainActivity extends BaseActivity {
         PermissionUtil.addPermission(MainActivity.this, Manifest.permission.INTERNET);
         List<String> permissionList = PermissionUtil.getRequestList();
         if(!permissionList.isEmpty()){
-            String[] permissions = permissionList.toArray(new String[permissionList.size()]);
+            String[] permissions = permissionList.toArray(new String[0]);
             ActivityCompat.requestPermissions(MainActivity.this, permissions, 1);
             permissionList.clear();
         } else {
@@ -241,6 +240,7 @@ public class MainActivity extends BaseActivity {
         public void onReceiveLocation(BDLocation bdLocation) {
             getHeWeatherData(bdLocation.getLongitude() + "," + bdLocation.getLatitude());
             mLocationClient.stop();
+
             mLocationClient = null;
         }
     }

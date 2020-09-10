@@ -21,14 +21,14 @@
         app:switch_text_title="@string/setting_weather_notify"
         app:switch_text_hint="@string/setting_weather_notify_hint"/>
 
-    <com.xzy.weather.SelectBarItem
+    <com.xzy.weather.setting.SelectBarItem
         android:id="@+id/item_temperature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:select_text_title="@string/setting_temp_unit"
         app:select_text_info="@string/temperature_unit_c"/>
 
-    <com.xzy.weather.SelectBarItem
+    <com.xzy.weather.setting.SelectBarItem
         android:id="@+id/item_update"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
