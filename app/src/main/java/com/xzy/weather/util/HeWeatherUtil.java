@@ -272,6 +272,11 @@ public class HeWeatherUtil {
         });
     }
 
+    public static String changeTempUnit(String tempC){
+        float temp = Float.parseFloat(tempC);
+        return String.valueOf(temp * 1.8f + 32);
+    }
+
     public interface OnResultListener{
         public void onSuccess();
     }

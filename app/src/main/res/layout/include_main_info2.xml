@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/black"
-        android:text="28°C"/>
+        android:text="@string/temperature_unit_c"/>
 
     <ImageView
         android:layout_width="24dp"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/black"
-        android:text="14°C"/>
+        android:text="@string/temperature_unit_c"/>
 
     <TextView
         android:id="@+id/tv_main_info_air"

@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,12 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.base.BaseFragment;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.MyWarningBean;
 import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
+import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.StringUtil;
@@ -83,6 +84,8 @@ public class WeatherFragment extends BaseFragment {
     ImageView ivBackground;
     @BindView(R.id.tv_main_info_temperature)
     TextView tvTemp;
+    @BindView(R.id.tv_main_info_unit)
+    TextView tvUnit;
     @BindView(R.id.tv_main_info_max)
     TextView tvTempMax;
     @BindView(R.id.tv_main_info_min)
@@ -91,6 +94,9 @@ public class WeatherFragment extends BaseFragment {
     TextView tvAir;
     @BindView(R.id.tv_main_info_type)
     TextView tvType;
+
+
+    SettingBean setting;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -124,6 +130,8 @@ public class WeatherFragment extends BaseFragment {
             }
             getWeatherFromHeAPI();
         }
+
+        setting = GlobalData.getInstance().getSetting();
     }
 
     @Override
@@ -188,9 +196,10 @@ public class WeatherFragment extends BaseFragment {
     private void updateWeatherNowView(){
         tvTemp.setText(weatherNow.getTemp());
         tvType.setText(weatherNow.getText());
-        tvTempMax.setText(weatherDailyList.get(0).getTempMax() + "°C");
-        tvTempMin.setText(weatherDailyList.get(0).getTempMin() + "°C");
-        tvAir.setText("空气" + weatherNow.getAir());
+        tvUnit.setText(setting.getTempUnit());
+        tvTempMax.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMax(), setting.getTempUnit()));
+        tvTempMin.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMin(), setting.getTempUnit()));
+        tvAir.setText(String.format(getResources().getString(R.string.air), weatherNow.getAir()));
 
         String weather = weatherNow.getText();
         int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");

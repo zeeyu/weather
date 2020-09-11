@@ -25,7 +25,9 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
+import com.xzy.weather.base.MyApplication;
 import com.xzy.weather.bean.MyLocationBean;
+import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.city.CityManageActivity;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.setting.SettingActivity;
@@ -61,6 +63,8 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.srl_main)
     SwipeRefreshLayout swipeRefreshLayout;
 
+    SettingBean setting;
+
     public LocationClient mLocationClient;
 
     public List<MyLocationBean> locationList = new ArrayList<>();
@@ -74,6 +78,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        getPermissions();
         initData();
     }
 
@@ -100,7 +105,10 @@ public class MainActivity extends BaseActivity {
         mLocationClient = new LocationClient(getApplicationContext());
         mLocationClient.registerLocationListener(new MyLocationListener());
 
-        getPermissions();
+        setting = DataStoreUtil.getSettingInfo(getApplicationContext());
+
+        GlobalData.getInstance().setSetting(setting);
+        //getPermissions();
     }
 
     @Override
@@ -134,6 +142,8 @@ public class MainActivity extends BaseActivity {
                 swipeRefreshLayout.setEnabled(false);
             }
         });
+
+
     }
 
     @Override
