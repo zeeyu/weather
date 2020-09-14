@@ -3,6 +3,8 @@ package com.xzy.weather.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.preference.PreferenceManager;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xzy.weather.bean.MyLocationBean;
@@ -15,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author:xzy
@@ -29,7 +32,9 @@ public class DataStoreUtil {
     private static String KEY_WEATHER_NOW = "weather_now";
     private static String KEY_WARNING = "warning";
     private static String KEY_UPDATE_TIME = "update_time";
-    private static String KEY_SETTING = "setting";
+    private static String KEY_SETTING_NOTIFY = "setting_weather_notify";
+    private static String KEY_SETTING_UNIT = "setting_temp_unit";
+    private static String KEY_SETTING_UPDATE = "setting_auto_update";
 
     /**
      * 保存城市列表
@@ -139,20 +144,12 @@ public class DataStoreUtil {
         return sp.getString(KEY_UPDATE_TIME, TimeUtil.DEFAULT_TIME);
     }
 
-    synchronized public static void setSettingInfo(Context context, SettingBean setting) {
-        String json = new Gson().toJson(setting);
-        SharedPreferences sp = context.getSharedPreferences(KEY_SETTING, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString(KEY_SETTING, json);
-        editor.apply();
-    }
-
     public static SettingBean getSettingInfo(Context context) {
-        SharedPreferences sp = context.getSharedPreferences(KEY_SETTING, Context.MODE_PRIVATE);
-        String json = sp.getString(KEY_SETTING, "");
-        if("".equals(json)){
-            return new SettingBean();
-        }
-        return new Gson().fromJson(json, SettingBean.class);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SettingBean settingBean = new SettingBean();
+        settingBean.setWeatherNotify(sp.getBoolean(KEY_SETTING_NOTIFY, false));
+        settingBean.setAutoUpdateTime(sp.getString(KEY_UPDATE_TIME, "1小时"));
+        settingBean.setTempUnit(sp.getString(KEY_SETTING_UNIT, "°C"));
+        return settingBean;
     }
 }

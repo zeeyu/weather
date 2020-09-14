@@ -8,6 +8,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -104,6 +106,7 @@ public class MainActivity extends BaseActivity {
 
         mLocationClient = new LocationClient(getApplicationContext());
         mLocationClient.registerLocationListener(new MyLocationListener());
+        requestLocation();
 
         setting = DataStoreUtil.getSettingInfo(getApplicationContext());
 
@@ -226,8 +229,6 @@ public class MainActivity extends BaseActivity {
             String[] permissions = permissionList.toArray(new String[0]);
             ActivityCompat.requestPermissions(MainActivity.this, permissions, 1);
             permissionList.clear();
-        } else {
-            requestLocation();
         }
     }
 
@@ -301,11 +302,18 @@ public class MainActivity extends BaseActivity {
                             return;
                         }
                     }
-                    requestLocation();
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+    private class SettingBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
         }
     }
 }

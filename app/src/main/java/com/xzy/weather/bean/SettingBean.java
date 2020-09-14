@@ -8,11 +8,12 @@ public class SettingBean {
 
     boolean weatherNotify;
     String tempUnit;
-    int autoUpdateTime;
+    String autoUpdateTime;
 
     public SettingBean(){
         weatherNotify = true;
-        autoUpdateTime = 1;
+        autoUpdateTime = "1小时";
+        tempUnit = "°C";
     }
 
     public boolean isWeatherNotify() {
@@ -31,11 +32,11 @@ public class SettingBean {
         this.tempUnit = tempUnit;
     }
 
-    public int getAutoUpdateTime() {
+    public String getAutoUpdateTime() {
         return autoUpdateTime;
     }
 
-    public void setAutoUpdateTime(int autoUpdateTime) {
+    public void setAutoUpdateTime(String autoUpdateTime) {
         this.autoUpdateTime = autoUpdateTime;
     }
 }

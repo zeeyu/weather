@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.MyWeatherBean;
@@ -27,8 +28,8 @@ import butterknife.ButterKnife;
  **/
 public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAdapter.ViewHolder> {
 
-    public static final int MODE_NORMAL = 0;
-    public static final int MODE_EDIT = 1;
+    private static final int MODE_NORMAL = 0;
+    private static final int MODE_EDIT = 1;
     private int mode = MODE_NORMAL;
 
     private List<MyLocationBean> locationList;
@@ -61,6 +62,8 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         ImageView ivLocal;
         @BindView(R.id.iv_city_manage_remove)
         ImageView ivRemove;
+        @BindView(R.id.tv_city_manage_unit)
+        TextView tvUnit;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,6 +98,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         holder.tvTime.setText(tmpWeatherList.get(position).getTime());
         holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
         holder.ivRemove.setOnClickListener(v -> deleteItem(position));
+        holder.tvUnit.setText(GlobalData.getInstance().getSetting().getTempUnit());
 
         if(mode == MODE_NORMAL){
             if(holder.ivRemove.getVisibility() == View.VISIBLE){
@@ -117,7 +121,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         }
     }
 
-    private void deleteItem(int position){
+    private void deleteItem(int position) {
         tmpWeatherNowList.remove(position);
         tmpWeatherList.remove(position);
         tmpLocationList.remove(position);
@@ -125,7 +129,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         notifyDataSetChanged();
     }
 
-    public void delete() {
+    void delete() {
         locationList.clear();
         weatherList.clear();
         weatherNowList.clear();
@@ -135,7 +139,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         mode = MODE_NORMAL;
     }
 
-    public void redo() {
+    void redo() {
         tmpLocationList.clear();
         tmpWeatherList.clear();
         tmpWeatherNowList.clear();

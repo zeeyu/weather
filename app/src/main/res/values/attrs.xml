@@ -9,4 +9,11 @@
         <attr name="select_text_title" format="string"/>
         <attr name="select_text_info" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="SettingListPreference">
+        <attr name="title" format="string"/>
+        <attr name="infoRight" format="string"/>
+        <attr name="iconRight" format="reference"/>
+    </declare-styleable>
+
 </resources>

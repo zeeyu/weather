@@ -8,8 +8,6 @@ import com.xzy.weather.bean.SettingBean;
  **/
 public class GlobalData {
 
-    private static GlobalData data = null;
-
     private SettingBean setting;
 
     private static class InnerGlobalData {

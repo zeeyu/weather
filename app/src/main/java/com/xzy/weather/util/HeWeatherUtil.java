@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.xzy.weather.R;
+import com.xzy.weather.GlobalData;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.MyWarningBean;
 import com.xzy.weather.bean.MyWeatherBean;
@@ -35,9 +35,14 @@ public class HeWeatherUtil {
     private static String HE_ID = "HE2008191124411841";
     private static String HE_KEY = "1303d8f41ae24186b5de7055a0b0e2a4";
 
+    private static String unit;
+
     private static void init(){
         HeConfig.init(HE_ID, HE_KEY);
         HeConfig.switchToDevService();
+        if(unit == null){
+            unit = GlobalData.getInstance().getSetting().getTempUnit();
+        }
     }
 
     public static void getGeoTopCity(Context context, List<MyLocationBean> cityList, OnResultListener listener){
@@ -59,7 +64,6 @@ public class HeWeatherUtil {
                             locationBean.getAdm2(),
                             locationBean.getAdm1(),
                             locationBean.getType()));
-
                 }
                 listener.onSuccess();
             }
@@ -130,7 +134,11 @@ public class HeWeatherUtil {
                 Log.d(TAG, "Weather now onSuccess:" + new Gson().toJson(weatherNowBean));
                 WeatherNowBean.NowBaseBean weatherNowBaseBean = weatherNowBean.getNow();
 
-                weatherNow.setTemp(weatherNowBaseBean.getTemp());
+                if("°F".equals(unit)) {
+                    weatherNow.setTemp(formatTemp(weatherNowBaseBean.getTemp()));
+                } else {
+                    weatherNow.setTemp(weatherNowBaseBean.getTemp());
+                }
                 weatherNow.setText(weatherNowBaseBean.getText());
                 weatherNow.setHumidity(weatherNowBaseBean.getHumidity());
                 weatherNow.setVis(weatherNowBaseBean.getVis());
@@ -178,8 +186,12 @@ public class HeWeatherUtil {
                 for(int i = 0; i < beanList.size(); i++){
                     WeatherHourlyBean.HourlyBean bean = beanList.get(i);
 
+                    if("°F".equals(unit)) {
+                        weatherHourlyList.get(i).setTemp(formatTemp(bean.getTemp()));
+                    } else {
+                        weatherHourlyList.get(i).setTemp(bean.getTemp());
+                    }
                     weatherHourlyList.get(i).setTime(TimeUtil.getTimeHour(bean.getFxTime()));
-                    weatherHourlyList.get(i).setTemp(bean.getTemp());
                     weatherHourlyList.get(i).setWindScale(bean.getWindScale());
                     weatherHourlyList.get(i).setText(bean.getText());
                 }
@@ -211,9 +223,15 @@ public class HeWeatherUtil {
                         weatherNow.setSunset(bean.getSunset());
                     }
 
+                    if("°F".equals(unit)){
+                        weatherDailyList.get(i).setTempMax(formatTemp(bean.getTempMax()));
+                        weatherDailyList.get(i).setTempMin(formatTemp(bean.getTempMin()));
+                    } else {
+                        weatherDailyList.get(i).setTempMax(bean.getTempMax());
+                        weatherDailyList.get(i).setTempMin(bean.getTempMin());
+                    }
+
                     weatherDailyList.get(i).setDate(bean.getFxDate());
-                    weatherDailyList.get(i).setTempMax(bean.getTempMax());
-                    weatherDailyList.get(i).setTempMin(bean.getTempMin());
                     weatherDailyList.get(i).setText(bean.getTextDay());
                 }
                 listener.onSuccess();
@@ -272,12 +290,12 @@ public class HeWeatherUtil {
         });
     }
 
-    public static String changeTempUnit(String tempC){
+    public static String formatTemp(String tempC){
         float temp = Float.parseFloat(tempC);
-        return String.valueOf(temp * 1.8f + 32);
+        return String.valueOf((int)(temp * 1.8f) + 32);
     }
 
     public interface OnResultListener{
-        public void onSuccess();
+        void onSuccess();
     }
 }

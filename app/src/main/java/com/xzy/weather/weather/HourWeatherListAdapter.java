@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.util.StringUtil;
@@ -76,9 +77,9 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MyWeatherBean hourlyBean = mHourlyList.get(position);
-        holder.tvTemp.setText(hourlyBean.getTemp() + "°C");
+        holder.tvTemp.setText(String.format(mContext.getString(R.string.temperature), hourlyBean.getTemp(), GlobalData.getInstance().getSetting().getTempUnit()));
         holder.tvTime.setText(hourlyBean.getTime());
-        holder.tvWind.setText(hourlyBean.getWindScale() + "级");
+        holder.tvWind.setText(String.format(mContext.getString(R.string.wind_scale), hourlyBean.getWindScale()));
 
         if(!init[position]) {
             drawLine(holder, position);

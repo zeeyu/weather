@@ -95,7 +95,6 @@ public class WeatherFragment extends BaseFragment {
     @BindView(R.id.tv_main_info_type)
     TextView tvType;
 
-
     SettingBean setting;
 
     public WeatherFragment() {
@@ -114,6 +113,7 @@ public class WeatherFragment extends BaseFragment {
         weatherDailyList.clear();
         weatherHourlyList.clear();
         warningList.clear();
+        setting = GlobalData.getInstance().getSetting();
         if(TimeUtil.getIntervalHour(TimeUtil.getHourNow(), TimeUtil.getTimeHour(time), TimeUtil.getDateNow(), TimeUtil.getTimeDate(time)) < 0.1f){
             weatherNow = DataStoreUtil.getWeatherNow(getApplicationContext(), location.getId());
             weatherHourlyList = DataStoreUtil.getWeather24h(getApplicationContext(), location.getId());
@@ -130,8 +130,6 @@ public class WeatherFragment extends BaseFragment {
             }
             getWeatherFromHeAPI();
         }
-
-        setting = GlobalData.getInstance().getSetting();
     }
 
     @Override
@@ -196,10 +194,10 @@ public class WeatherFragment extends BaseFragment {
     private void updateWeatherNowView(){
         tvTemp.setText(weatherNow.getTemp());
         tvType.setText(weatherNow.getText());
+        tvAir.setText(String.format(getResources().getString(R.string.air), weatherNow.getAir()));
         tvUnit.setText(setting.getTempUnit());
         tvTempMax.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMax(), setting.getTempUnit()));
         tvTempMin.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMin(), setting.getTempUnit()));
-        tvAir.setText(String.format(getResources().getString(R.string.air), weatherNow.getAir()));
 
         String weather = weatherNow.getText();
         int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");

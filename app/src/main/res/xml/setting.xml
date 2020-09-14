@@ -4,22 +4,28 @@
 
     <SwitchPreference
         android:key="setting_weather_notify"
+        app:iconSpaceReserved="false"
         android:title="@string/setting_weather_notify"
         android:summary="@string/setting_weather_notify_hint"/>
 
-    <ListPreference
+    <com.xzy.weather.setting.SettingListPreference
         android:key="setting_temp_unit"
         android:title="@string/setting_temp_unit"
         android:dialogTitle="@string/setting_temp_unit"
+        app:title="@string/setting_temp_unit"
+        app:iconRight="@drawable/ic_right"
+        app:iconSpaceReserved="false"
         android:entries="@array/temp_unit"
         android:entryValues="@array/temp_unit"/>
 
-    <ListPreference
+    <com.xzy.weather.setting.SettingListPreference
         android:key="setting_auto_update"
         android:title="@string/setting_auto_update"
         android:dialogTitle="@string/setting_auto_update"
+        app:title="@string/setting_auto_update"
+        app:iconRight="@drawable/ic_right"
+        app:iconSpaceReserved="false"
         android:entries="@array/update_time"
-        android:icon="@drawable/ic_right"
         android:entryValues="@array/update_time"/>
 
 </PreferenceScreen>

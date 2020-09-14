@@ -12,25 +12,24 @@ import com.xzy.weather.bean.SettingBean;
 public class MyApplication extends Application {
 
     private static Context mContext;
-    private static MyApplication app;
+    //private static MyApplication app;
 
-    private SettingBean setting;
+    //private SettingBean setting;
 
-    public static MyApplication getInstance() {
-        return app;
-    }
+//    public static MyApplication getInstance() {
+//        return app;
+//    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        app = this;
+        //app = this;
         mContext = getApplicationContext();
     }
 
     @Override
     public void onTerminate() {
-        mContext = null;
-        app = null;
+        //app = null;
         super.onTerminate();
     }
 
@@ -38,11 +37,11 @@ public class MyApplication extends Application {
         return mContext;
     }
 
-    public SettingBean getSetting() {
-        return setting;
-    }
-
-    public void setSetting(SettingBean setting) {
-        this.setting = setting;
-    }
+//    public SettingBean getSetting() {
+//        return setting;
+//    }
+//
+//    public void setSetting(SettingBean setting) {
+//        this.setting = setting;
+//    }
 }
