@@ -27,7 +27,6 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
-import com.xzy.weather.base.MyApplication;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.city.CityManageActivity;
@@ -145,8 +144,6 @@ public class MainActivity extends BaseActivity {
                 swipeRefreshLayout.setEnabled(false);
             }
         });
-
-
     }
 
     @Override
@@ -265,7 +262,7 @@ public class MainActivity extends BaseActivity {
     /**
      * 处理和风天气返回的位置信息
      */
-    public void onReceiveLocationData(MyLocationBean myLocationBean){
+    public void onReceiveLocationData(MyLocationBean myLocationBean) {
         if(myLocationBean != null) {
             if (locationList == null) {
                 locationList = new ArrayList<>();
@@ -294,9 +291,9 @@ public class MainActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch(requestCode) {
             case 1 :
-                if(grantResults.length > 0){
-                    for(int result : grantResults){
-                        if(result != PackageManager.PERMISSION_GRANTED){
+                if(grantResults.length > 0) {
+                    for(int result : grantResults) {
+                        if(result != PackageManager.PERMISSION_GRANTED) {
                             Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
                             finish();
                             return;
@@ -306,14 +303,6 @@ public class MainActivity extends BaseActivity {
                 break;
             default:
                 break;
-        }
-    }
-
-    private class SettingBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
         }
     }
 }

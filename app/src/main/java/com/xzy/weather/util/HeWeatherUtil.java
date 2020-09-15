@@ -134,11 +134,7 @@ public class HeWeatherUtil {
                 Log.d(TAG, "Weather now onSuccess:" + new Gson().toJson(weatherNowBean));
                 WeatherNowBean.NowBaseBean weatherNowBaseBean = weatherNowBean.getNow();
 
-                if("°F".equals(unit)) {
-                    weatherNow.setTemp(formatTemp(weatherNowBaseBean.getTemp()));
-                } else {
-                    weatherNow.setTemp(weatherNowBaseBean.getTemp());
-                }
+                weatherNow.setTemp(weatherNowBaseBean.getTemp());
                 weatherNow.setText(weatherNowBaseBean.getText());
                 weatherNow.setHumidity(weatherNowBaseBean.getHumidity());
                 weatherNow.setVis(weatherNowBaseBean.getVis());
@@ -186,11 +182,7 @@ public class HeWeatherUtil {
                 for(int i = 0; i < beanList.size(); i++){
                     WeatherHourlyBean.HourlyBean bean = beanList.get(i);
 
-                    if("°F".equals(unit)) {
-                        weatherHourlyList.get(i).setTemp(formatTemp(bean.getTemp()));
-                    } else {
-                        weatherHourlyList.get(i).setTemp(bean.getTemp());
-                    }
+                    weatherHourlyList.get(i).setTemp(bean.getTemp());
                     weatherHourlyList.get(i).setTime(TimeUtil.getTimeHour(bean.getFxTime()));
                     weatherHourlyList.get(i).setWindScale(bean.getWindScale());
                     weatherHourlyList.get(i).setText(bean.getText());
@@ -223,14 +215,8 @@ public class HeWeatherUtil {
                         weatherNow.setSunset(bean.getSunset());
                     }
 
-                    if("°F".equals(unit)){
-                        weatherDailyList.get(i).setTempMax(formatTemp(bean.getTempMax()));
-                        weatherDailyList.get(i).setTempMin(formatTemp(bean.getTempMin()));
-                    } else {
-                        weatherDailyList.get(i).setTempMax(bean.getTempMax());
-                        weatherDailyList.get(i).setTempMin(bean.getTempMin());
-                    }
-
+                    weatherDailyList.get(i).setTempMax(bean.getTempMax());
+                    weatherDailyList.get(i).setTempMin(bean.getTempMin());
                     weatherDailyList.get(i).setDate(bean.getFxDate());
                     weatherDailyList.get(i).setText(bean.getTextDay());
                 }
@@ -290,9 +276,14 @@ public class HeWeatherUtil {
         });
     }
 
-    public static String formatTemp(String tempC){
+    public static String formatTempC(String tempC) {
         float temp = Float.parseFloat(tempC);
         return String.valueOf((int)(temp * 1.8f) + 32);
+    }
+
+    public static String formatTempF(String tempF) {
+        float temp = Float.parseFloat(tempF);
+        return String.valueOf((int)((temp - 32f)/1.8f));
     }
 
     public interface OnResultListener{

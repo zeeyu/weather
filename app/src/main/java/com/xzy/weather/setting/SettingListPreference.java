@@ -43,8 +43,8 @@ public class SettingListPreference extends ListPreference {
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-        Log.d(TAG, "onBindViewHolder");
         ButterKnife.bind(this, holder.itemView);
+
         tvTitle.setText(typedArray.getString(R.styleable.SettingListPreference_title));
         typedArray.recycle();
         setValue(getValue());
@@ -57,5 +57,10 @@ public class SettingListPreference extends ListPreference {
             tvInfo.setText(value);
         }
         super.setValue(value);
+    }
+
+    @Override
+    public void onDetached() {
+        super.onDetached();
     }
 }

@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.MyWeatherBean;
+import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.StringUtil;
 
 import java.util.List;
@@ -77,7 +78,14 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MyWeatherBean hourlyBean = mHourlyList.get(position);
-        holder.tvTemp.setText(String.format(mContext.getString(R.string.temperature), hourlyBean.getTemp(), GlobalData.getInstance().getSetting().getTempUnit()));
+
+        String unit = GlobalData.getInstance().getSetting().getTempUnit();
+        if("°C".equals(unit)) {
+            holder.tvTemp.setText(String.format(mContext.getString(R.string.temperature), hourlyBean.getTemp(), unit));
+        } else {
+            holder.tvTemp.setText(String.format(mContext.getString(R.string.temperature), HeWeatherUtil.formatTempC(hourlyBean.getTemp()), unit));
+        }
+
         holder.tvTime.setText(hourlyBean.getTime());
         holder.tvWind.setText(String.format(mContext.getString(R.string.wind_scale), hourlyBean.getWindScale()));
 

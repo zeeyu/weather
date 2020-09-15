@@ -15,6 +15,7 @@ import com.xzy.weather.R;
 import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
+import com.xzy.weather.util.HeWeatherUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +28,6 @@ import butterknife.ButterKnife;
  * Date:2020/8/27 16:04
  **/
 public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAdapter.ViewHolder> {
-
-    private static final int MODE_NORMAL = 0;
-    private static final int MODE_EDIT = 1;
-    private int mode = MODE_NORMAL;
-
-    private List<MyLocationBean> locationList;
-    private List<MyWeatherNowBean> weatherNowList;
-    private List<MyWeatherBean> weatherList;
-
-    private List<MyLocationBean> tmpLocationList = new ArrayList<>();
-    private List<MyWeatherNowBean> tmpWeatherNowList = new ArrayList<>();
-    private List<MyWeatherBean> tmpWeatherList = new ArrayList<>();
-
-    private OnItemClickListener listener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -71,6 +58,20 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         }
     }
 
+    private static final int MODE_NORMAL = 0;
+    private static final int MODE_EDIT = 1;
+    private int mode = MODE_NORMAL;
+
+    private List<MyLocationBean> locationList;
+    private List<MyWeatherNowBean> weatherNowList;
+    private List<MyWeatherBean> weatherList;
+
+    private List<MyLocationBean> tmpLocationList = new ArrayList<>();
+    private List<MyWeatherNowBean> tmpWeatherNowList = new ArrayList<>();
+    private List<MyWeatherBean> tmpWeatherList = new ArrayList<>();
+
+    private OnItemClickListener listener;
+
     CityManageListAdapter(List<MyLocationBean> locationList, List<MyWeatherNowBean> weatherNowList, List<MyWeatherBean> weatherList){
         this.locationList = locationList;
         this.weatherNowList = weatherNowList;
@@ -90,15 +91,23 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tvTemp.setText(tmpWeatherNowList.get(position).getTemp());
         holder.tvType.setText(tmpWeatherNowList.get(position).getText());
         holder.tvAir.setText(tmpWeatherList.get(position).getAir());
-        holder.tvMax.setText(tmpWeatherList.get(position).getTempMax());
-        holder.tvMin.setText(tmpWeatherList.get(position).getTempMin());
         holder.tvTime.setText(tmpWeatherList.get(position).getTime());
         holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
         holder.ivRemove.setOnClickListener(v -> deleteItem(position));
-        holder.tvUnit.setText(GlobalData.getInstance().getSetting().getTempUnit());
+
+        String unit = GlobalData.getInstance().getSetting().getTempUnit();
+        holder.tvUnit.setText(unit);
+        if("°C".equals(unit)) {
+            holder.tvType.setText(tmpWeatherList.get(position).getTemp());
+            holder.tvMax.setText(tmpWeatherList.get(position).getTempMax());
+            holder.tvMin.setText(tmpWeatherList.get(position).getTempMin());
+        } else {
+            holder.tvType.setText(HeWeatherUtil.formatTempC(tmpWeatherList.get(position).getTemp()));
+            holder.tvMax.setText(HeWeatherUtil.formatTempC(tmpWeatherList.get(position).getTempMax()));
+            holder.tvMin.setText(HeWeatherUtil.formatTempC(tmpWeatherList.get(position).getTempMin()));
+        }
 
         if(mode == MODE_NORMAL){
             if(holder.ivRemove.getVisibility() == View.VISIBLE){
@@ -154,7 +163,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         return tmpLocationList.size();
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }
 

@@ -14,11 +14,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.SwitchBarItem;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.util.DataStoreUtil;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +35,7 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.tb_setting)
     Toolbar toolbar;
 
-    private SettingBean mSettingBean;
+    private static SettingBean setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,7 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mSettingBean = DataStoreUtil.getSettingInfo(getApplicationContext());
+        setting = DataStoreUtil.getSettingInfo(getApplicationContext());
     }
 
     @Override
@@ -73,9 +76,11 @@ public class SettingActivity extends BaseActivity {
             settingUnitPreference = findPreference("setting_temp_unit");
             settingUpdatePreference = findPreference("setting_auto_update");
 
-            localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+            localBroadcastManager = LocalBroadcastManager.getInstance(requireContext());
 
             settingUnitPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+                Log.d(TAG, "onPreferenceChange");
+                setting.setTempUnit(newValue.toString());
                 localBroadcastManager.sendBroadcast(new Intent(UNIT_CHANGE_ACTION));
                 return true;
             });

@@ -12,8 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.MyWeatherBean;
+import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.StringUtil;
 import com.xzy.weather.util.TimeUtil;
 
@@ -46,13 +48,13 @@ public class DayWeatherListAdapter extends RecyclerView.Adapter<DayWeatherListAd
         @BindView(R.id.iv_main_day_weather)
         ImageView ivWeather;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
-    public DayWeatherListAdapter(List<MyWeatherBean> weatherDailyList){
+    DayWeatherListAdapter(List<MyWeatherBean> weatherDailyList){
         this.mWeatherDailyList = weatherDailyList;
     }
 
@@ -61,20 +63,25 @@ public class DayWeatherListAdapter extends RecyclerView.Adapter<DayWeatherListAd
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext = parent.getContext();
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_list_main_day, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) throws Resources.NotFoundException {
         MyWeatherBean weatherDailyBean = mWeatherDailyList.get(position);
 
-        holder.tvTemp.setText(weatherDailyBean.getTempMax() + "°" +"/" + weatherDailyBean.getTempMin() + "°");
+        String unit = GlobalData.getInstance().getSetting().getTempUnit();
+        if("°C".equals(unit)) {
+            holder.tvTemp.setText(String.format(mContext.getString(R.string.daily_weather_temp), weatherDailyBean.getTempMax(), weatherDailyBean.getTempMin()));
+        } else {
+            holder.tvTemp.setText(String.format(mContext.getString(R.string.daily_weather_temp), HeWeatherUtil.formatTempC(weatherDailyBean.getTempMax()), HeWeatherUtil.formatTempC(weatherDailyBean.getTempMin())));
+        }
+        //holder.tvTemp.setText(String.format(mContext.getString(R.string.daily_weather_temp), weatherDailyBean.getTempMax(), weatherDailyBean.getTempMin()));
         holder.tvAir.setText(weatherDailyBean.getAir());
 
         String fxDate = weatherDailyBean.getDate();
         String[] date = fxDate.split("-");
-        holder.tvDate.setText(date[1] + "月" + date[2] + "日" + TimeUtil.getWeek(TimeUtil.strToDate(fxDate)));
+        holder.tvDate.setText(String.format(mContext.getString(R.string.date), date[1], date[2], TimeUtil.getWeek(TimeUtil.strToDate(fxDate))));
 
         String weather = weatherDailyBean.getText();
        // Log.d(TAG, "weather: " + weather);

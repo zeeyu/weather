@@ -1,12 +1,16 @@
 package com.xzy.weather.weather;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +33,7 @@ import com.xzy.weather.bean.MyWarningBean;
 import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
 import com.xzy.weather.bean.SettingBean;
+import com.xzy.weather.setting.SettingActivity;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.StringUtil;
@@ -44,6 +49,26 @@ import butterknife.ButterKnife;
 
 public class WeatherFragment extends BaseFragment {
 
+    private class SettingBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String unit = setting.getTempUnit();
+            tvUnit.setText(unit);
+            if("°F".equals(unit)) {
+                tvTemp.setText(HeWeatherUtil.formatTempC(weatherNow.getTemp()));
+                tvTempMax.setText(HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMax()));
+                tvTempMin.setText(HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMin()));
+            } else {
+                tvTemp.setText(weatherNow.getTemp());
+                tvTempMax.setText(weatherDailyList.get(0).getTempMax());
+                tvTempMin.setText(weatherDailyList.get(0).getTempMin());
+            }
+            hourWeatherListAdapter.notifyDataSetChanged();
+            dayWeatherListAdapter.notifyDataSetChanged();
+        }
+    }
+
     private static final String TAG = "WeatherFragment";
 
     private static final int DAYS_OF_WEEK = 7;
@@ -52,8 +77,8 @@ public class WeatherFragment extends BaseFragment {
     private static final float ALPHA_MAX = 1.0f;
     private static final float ALPHA_MIN = 0;
 
-    public MyWeatherNowBean weatherNow;
-    public List<MyWeatherBean> weatherDailyList = new ArrayList<>();
+    private MyWeatherNowBean weatherNow;
+    private List<MyWeatherBean> weatherDailyList = new ArrayList<>();
     private List<MyWeatherBean> weatherHourlyList = new ArrayList<>();
     private List<MyWarningBean> warningList = new ArrayList<>();
     private MyLocationBean location = new MyLocationBean();
@@ -95,7 +120,11 @@ public class WeatherFragment extends BaseFragment {
     @BindView(R.id.tv_main_info_type)
     TextView tvType;
 
-    SettingBean setting;
+    HourWeatherListAdapter hourWeatherListAdapter;
+    DayWeatherListAdapter dayWeatherListAdapter;
+
+    private SettingBean setting;
+    private SettingBroadcastReceiver mReceiver;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -130,6 +159,8 @@ public class WeatherFragment extends BaseFragment {
             }
             getWeatherFromHeAPI();
         }
+
+        registerReceiver();
     }
 
     @Override
@@ -150,6 +181,12 @@ public class WeatherFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver();
     }
 
     private void updateView(){
@@ -211,7 +248,8 @@ public class WeatherFragment extends BaseFragment {
         layoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvHour.setNestedScrollingEnabled(false);
         rvHour.setLayoutManager(layoutManager1);
-        rvHour.setAdapter(new HourWeatherListAdapter(weatherHourlyList));
+        hourWeatherListAdapter = new HourWeatherListAdapter(weatherHourlyList);
+        rvHour.setAdapter(hourWeatherListAdapter);
         rvHour.addItemDecoration(new HourWeatherListDecoration());
         rvHour.setItemViewCacheSize(weatherHourlyList.size());
     }
@@ -225,7 +263,8 @@ public class WeatherFragment extends BaseFragment {
         };
         rvDay.setNestedScrollingEnabled(false);
         rvDay.setLayoutManager(layoutManager2);
-        rvDay.setAdapter(new DayWeatherListAdapter(weatherDailyList));
+        dayWeatherListAdapter = new DayWeatherListAdapter(weatherDailyList);
+        rvDay.setAdapter(dayWeatherListAdapter);
         rvDay.addItemDecoration(new DayWeatherListDecoration());
     }
 
@@ -239,7 +278,7 @@ public class WeatherFragment extends BaseFragment {
     private void updateWarningView(){
         MyWarningBean bean = warningList.get(0);
 
-        tvWarningType.setText(bean.getType() + bean.getLevel() + "预警");
+        tvWarningType.setText(String.format(getString(R.string.warning), bean.getType(), bean.getLevel()));
 
         float hour = TimeUtil.getIntervalHour(
                 TimeUtil.getTimeHour(bean.getPubTime()), TimeUtil.getHourNow(),
@@ -281,5 +320,20 @@ public class WeatherFragment extends BaseFragment {
         HeWeatherUtil.getAir5D(getApplicationContext(), location, weatherDailyList, this::updateView);
 
         HeWeatherUtil.getWarning(getApplicationContext(), location, warningList, this::updateView);
+    }
+
+    private void registerReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SettingActivity.UNIT_CHANGE_ACTION);
+        if(mReceiver == null) {
+            mReceiver = new SettingBroadcastReceiver();
+            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiver, filter);
+        }
+    }
+
+    private void unregisterReceiver() {
+        if(mReceiver != null) {
+            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver);
+        }
     }
 }
