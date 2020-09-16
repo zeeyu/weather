@@ -2,17 +2,11 @@ package com.xzy.weather.weather;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
-import androidx.core.content.ContextCompat;
-
 import com.xzy.weather.R;
-
-import java.util.jar.Attributes;
 
 /**
  * Author:xzy
@@ -45,10 +39,10 @@ public class HourWeatherLineView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-       // Log.d(TAG, "onDraw " + index + " " + left + " " + right + " " + position);
+        //Log.d(TAG, "onDraw " + index + " " + left + " " + right + " " + position);
 
-        int width = getWidth();
-        int height = getHeight() - 4 * CIRCLE_RADIUS;
+        float width = getWidth();
+        float height = getHeight() - 4 * CIRCLE_RADIUS;
 
         mPaint.setAlpha(255);
         canvas.drawCircle(width / 2, CIRCLE_RADIUS * 2 + height * position, CIRCLE_RADIUS, mPaint);

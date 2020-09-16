@@ -35,7 +35,7 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.tb_setting)
     Toolbar toolbar;
 
-    private static SettingBean setting;
+    //private static SettingBean setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        setting = DataStoreUtil.getSettingInfo(getApplicationContext());
+        //setting = DataStoreUtil.getSettingInfo(getApplicationContext());
     }
 
     @Override
@@ -79,14 +79,15 @@ public class SettingActivity extends BaseActivity {
             localBroadcastManager = LocalBroadcastManager.getInstance(requireContext());
 
             settingUnitPreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                Log.d(TAG, "onPreferenceChange");
+                //Log.d(TAG, "onPreferenceChange" + newValue);
+                SettingBean setting = GlobalData.getInstance().getSetting();
                 setting.setTempUnit(newValue.toString());
                 localBroadcastManager.sendBroadcast(new Intent(UNIT_CHANGE_ACTION));
                 return true;
             });
 
             settingUpdatePreference.setOnPreferenceChangeListener((preference, newValue) -> {
-                Log.d(TAG, "onPreferenceChange: " + newValue);
+                //Log.d(TAG, "onPreferenceChange: " + newValue);
                 return true;
             });
         }

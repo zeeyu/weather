@@ -1,7 +1,6 @@
 package com.xzy.weather.weather;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
 import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.MyWeatherBean;
@@ -38,6 +36,9 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
     private int maxTemp = -10000;
     private int minTemp = 10000;
 
+    private float[] left;
+    private float[] right;
+    private float[] point;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -58,13 +59,16 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
         }
     }
 
-    HourWeatherListAdapter(List<MyWeatherBean> hourlyList){
+    HourWeatherListAdapter(List<MyWeatherBean> hourlyList) {
         mHourlyList = hourlyList;
-        for(int i = 0; i < hourlyList.size(); i++){
+        for(int i = 0; i < hourlyList.size(); i++) {
             maxTemp = Math.max(Integer.parseInt(hourlyList.get(i).getTemp()), maxTemp);
             minTemp = Math.min(Integer.parseInt(hourlyList.get(i).getTemp()), minTemp);
         }
         init = new boolean[hourlyList.size()];
+        left = new float[hourlyList.size()];
+        right = new float[hourlyList.size()];
+        point = new float[hourlyList.size()];
     }
 
     @NonNull
@@ -89,12 +93,7 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
         holder.tvTime.setText(hourlyBean.getTime());
         holder.tvWind.setText(String.format(mContext.getString(R.string.wind_scale), hourlyBean.getWindScale()));
 
-        if(!init[position]) {
-            drawLine(holder, position);
-            init[position] = true;
-        } else {
-            holder.viewLine.invalidate();
-        }
+        drawLine(holder, position);
 
         String weather = hourlyBean.getText();
         int id = mContext.getResources().getIdentifier("ic_" + StringUtil.getWeatherName(weather), "drawable", "com.xzy.weather");
@@ -103,24 +102,32 @@ public class HourWeatherListAdapter extends RecyclerView.Adapter<HourWeatherList
 
     private float mid = -1;   //两个view连线的中点坐标
     private void drawLine(@NonNull HourWeatherListAdapter.ViewHolder holder, int position){
-        //Log.d(TAG, "drawLine: " + position);
+         //Log.d(TAG, "drawLine: " + position);
 
-        float temp = Integer.parseInt(mHourlyList.get(position).getTemp());
-        float pos = -1;
-        float nextMid = -1;
-        if(maxTemp == minTemp){
-            pos = 0;
-        } else {
-            pos = (maxTemp - temp) / (maxTemp - minTemp);
-        }
-        if(position != mHourlyList.size() - 1){
-            float nextTemp = Integer.parseInt(mHourlyList.get(position + 1).getTemp());
-            float nextPos = (maxTemp - nextTemp) / (maxTemp - minTemp);
-            nextMid = Math.abs((nextPos + pos)/2);
+        if(!init[position]) {
+            init[position] = true;
+
+            float temp = Integer.parseInt(mHourlyList.get(position).getTemp());
+            float pos;
+            float nextMid = -1;
+            if(maxTemp == minTemp) {
+                pos = 0;
+            } else {
+                pos = (maxTemp - temp) / (maxTemp - minTemp);
+            }
+            if(position != mHourlyList.size() - 1) {
+                float nextTemp = Integer.parseInt(mHourlyList.get(position + 1).getTemp());
+                float nextPos = (maxTemp - nextTemp) / (maxTemp - minTemp);
+                nextMid = Math.abs((nextPos + pos)/2);
+            }
+            left[position] = mid;
+            right[position] = nextMid;
+            point[position] = pos;
+            mid = nextMid;
         }
 
-        holder.viewLine.setParam(position, mid, nextMid, pos, position == 0, position == 0, position == mHourlyList.size()-1);
-        mid = nextMid;
+        holder.viewLine.setParam(position, left[position], right[position], point[position], position == 0, position == 0, position == mHourlyList.size() - 1);
+        //holder.viewLine.setParam(position, mid, nextMid, pos, position == 0, position == 0, position == mHourlyList.size()-1);
     }
 
     @Override

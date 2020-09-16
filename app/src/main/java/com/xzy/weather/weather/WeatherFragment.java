@@ -54,15 +54,16 @@ public class WeatherFragment extends BaseFragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String unit = setting.getTempUnit();
+            Log.d(TAG, "onReceive unit:" + unit);
             tvUnit.setText(unit);
-            if("°F".equals(unit)) {
-                tvTemp.setText(HeWeatherUtil.formatTempC(weatherNow.getTemp()));
-                tvTempMax.setText(HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMax()));
-                tvTempMin.setText(HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMin()));
-            } else {
+            if("°C".equals(unit)) {
                 tvTemp.setText(weatherNow.getTemp());
-                tvTempMax.setText(weatherDailyList.get(0).getTempMax());
-                tvTempMin.setText(weatherDailyList.get(0).getTempMin());
+                tvTempMax.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMax(), unit));
+                tvTempMin.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMin(), unit));
+            } else {
+                tvTemp.setText(HeWeatherUtil.formatTempC(weatherNow.getTemp()));
+                tvTempMax.setText(String.format(getResources().getString(R.string.temperature), HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMax()), unit));
+                tvTempMin.setText(String.format(getResources().getString(R.string.temperature), HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMin()), unit));
             }
             hourWeatherListAdapter.notifyDataSetChanged();
             dayWeatherListAdapter.notifyDataSetChanged();
@@ -120,8 +121,8 @@ public class WeatherFragment extends BaseFragment {
     @BindView(R.id.tv_main_info_type)
     TextView tvType;
 
-    HourWeatherListAdapter hourWeatherListAdapter;
-    DayWeatherListAdapter dayWeatherListAdapter;
+    private HourWeatherListAdapter hourWeatherListAdapter;
+    private DayWeatherListAdapter dayWeatherListAdapter;
 
     private SettingBean setting;
     private SettingBroadcastReceiver mReceiver;
@@ -166,7 +167,6 @@ public class WeatherFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         Log.d(TAG, "onCreateView");
         return inflater.inflate(R.layout.fragment_weather, container, false);
     }
@@ -186,6 +186,7 @@ public class WeatherFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
         unregisterReceiver();
     }
 
@@ -229,12 +230,20 @@ public class WeatherFragment extends BaseFragment {
     }
 
     private void updateWeatherNowView(){
-        tvTemp.setText(weatherNow.getTemp());
+        String unit = setting.getTempUnit();
+        if("°C".equals(unit)) {
+            tvTemp.setText(weatherNow.getTemp());
+            tvTempMax.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMax(), unit));
+            tvTempMin.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMin(), unit));
+        } else {
+            tvTemp.setText(HeWeatherUtil.formatTempC(weatherNow.getTemp()));
+            tvTempMax.setText(String.format(getResources().getString(R.string.temperature), HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMax()), unit));
+            tvTempMin.setText(String.format(getResources().getString(R.string.temperature), HeWeatherUtil.formatTempC(weatherDailyList.get(0).getTempMin()), unit));
+        }
         tvType.setText(weatherNow.getText());
         tvAir.setText(String.format(getResources().getString(R.string.air), weatherNow.getAir()));
         tvUnit.setText(setting.getTempUnit());
-        tvTempMax.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMax(), setting.getTempUnit()));
-        tvTempMin.setText(String.format(getResources().getString(R.string.temperature), weatherDailyList.get(0).getTempMin(), setting.getTempUnit()));
+
 
         String weather = weatherNow.getText();
         int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");
@@ -251,7 +260,7 @@ public class WeatherFragment extends BaseFragment {
         hourWeatherListAdapter = new HourWeatherListAdapter(weatherHourlyList);
         rvHour.setAdapter(hourWeatherListAdapter);
         rvHour.addItemDecoration(new HourWeatherListDecoration());
-        rvHour.setItemViewCacheSize(weatherHourlyList.size());
+        //rvHour.setItemViewCacheSize(weatherHourlyList.size());
     }
 
     private void updateWeather7dView(){

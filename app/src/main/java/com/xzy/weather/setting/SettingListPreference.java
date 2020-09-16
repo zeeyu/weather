@@ -28,7 +28,8 @@ public class SettingListPreference extends ListPreference {
     TextView tvTitle;
     @BindView(R.id.tv_select_bar_info)
     TextView tvInfo;
-    TypedArray typedArray;
+    private TypedArray typedArray;
+    private String title;
 
     public SettingListPreference(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
@@ -38,6 +39,8 @@ public class SettingListPreference extends ListPreference {
         super(context, attrs, defStyle);
         setLayoutResource(R.layout.item_select_bar);
         typedArray = context.obtainStyledAttributes(attrs, R.styleable.SettingListPreference, defStyle, 0);
+        title = typedArray.getString(R.styleable.SettingListPreference_title);
+        typedArray.recycle();
     }
 
     @Override
@@ -45,8 +48,8 @@ public class SettingListPreference extends ListPreference {
         super.onBindViewHolder(holder);
         ButterKnife.bind(this, holder.itemView);
 
-        tvTitle.setText(typedArray.getString(R.styleable.SettingListPreference_title));
-        typedArray.recycle();
+        tvTitle.setText(title);
+
         setValue(getValue());
     }
 

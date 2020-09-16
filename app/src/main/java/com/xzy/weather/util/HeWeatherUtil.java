@@ -277,8 +277,14 @@ public class HeWeatherUtil {
     }
 
     public static String formatTempC(String tempC) {
-        float temp = Float.parseFloat(tempC);
-        return String.valueOf((int)(temp * 1.8f) + 32);
+        String tempF = null;
+        try {
+            float temp = Float.parseFloat(tempC);
+            tempF = String.valueOf((int) (temp * 1.8f) + 32);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tempF;
     }
 
     public static String formatTempF(String tempF) {

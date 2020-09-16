@@ -17,7 +17,6 @@
         android:id="@+id/tv_city_manage_unit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="°C"
         android:textSize="50sp" />
 
 </LinearLayout>

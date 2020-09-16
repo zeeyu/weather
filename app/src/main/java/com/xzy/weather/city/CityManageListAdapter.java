@@ -1,6 +1,7 @@
 package com.xzy.weather.city;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import butterknife.ButterKnife;
  * Date:2020/8/27 16:04
  **/
 public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAdapter.ViewHolder> {
+
+    private static final String TAG = "CityManageListAdapter";
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -58,6 +61,8 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         }
     }
 
+    private Context mContext;
+
     private static final int MODE_NORMAL = 0;
     private static final int MODE_EDIT = 1;
     private int mode = MODE_NORMAL;
@@ -84,7 +89,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context mContext = parent.getContext();
+        mContext = parent.getContext();
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_list_city_manage, parent, false);
         return new ViewHolder(view);
     }
@@ -94,19 +99,20 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         holder.tvType.setText(tmpWeatherNowList.get(position).getText());
         holder.tvAir.setText(tmpWeatherList.get(position).getAir());
         holder.tvTime.setText(tmpWeatherList.get(position).getTime());
-        holder.tvLocation.setText(locationList.get(position).getCity() + " " + locationList.get(position).getName());
+        holder.tvLocation.setText(String.format(mContext.getString(R.string.location), locationList.get(position).getCity(), locationList.get(position).getName()));
         holder.ivRemove.setOnClickListener(v -> deleteItem(position));
 
         String unit = GlobalData.getInstance().getSetting().getTempUnit();
+        Log.d(TAG, "onBindViewHolder: " + unit);
         holder.tvUnit.setText(unit);
         if("°C".equals(unit)) {
-            holder.tvType.setText(tmpWeatherList.get(position).getTemp());
-            holder.tvMax.setText(tmpWeatherList.get(position).getTempMax());
-            holder.tvMin.setText(tmpWeatherList.get(position).getTempMin());
+            holder.tvTemp.setText(tmpWeatherNowList.get(position).getTemp());
+            holder.tvMax.setText(String.format(mContext.getString(R.string.temperature), tmpWeatherList.get(position).getTempMax(), unit));
+            holder.tvMin.setText(String.format(mContext.getString(R.string.temperature), tmpWeatherList.get(position).getTempMin(), unit));
         } else {
-            holder.tvType.setText(HeWeatherUtil.formatTempC(tmpWeatherList.get(position).getTemp()));
-            holder.tvMax.setText(HeWeatherUtil.formatTempC(tmpWeatherList.get(position).getTempMax()));
-            holder.tvMin.setText(HeWeatherUtil.formatTempC(tmpWeatherList.get(position).getTempMin()));
+            holder.tvTemp.setText(HeWeatherUtil.formatTempC(tmpWeatherNowList.get(position).getTemp()));
+            holder.tvMax.setText(String.format(mContext.getString(R.string.temperature), tmpWeatherList.get(position).getTempMax(), unit));
+            holder.tvMin.setText(String.format(mContext.getString(R.string.temperature), tmpWeatherList.get(position).getTempMin(), unit));
         }
 
         if(mode == MODE_NORMAL){

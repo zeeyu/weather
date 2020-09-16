@@ -23,6 +23,7 @@
     <string name="update_minute">%1$d分钟前更新</string>
     <string name="update_hour">%1$.1f小时前更新</string>
 
+    <string name="location">%1$s %2$s</string>
     <string name="city_search">搜索国内外城市</string>
     <string name="city_top">推荐城市</string>
     <string name="city_locating">定位中</string>
