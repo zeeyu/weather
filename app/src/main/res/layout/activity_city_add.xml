@@ -21,7 +21,7 @@
         android:layout_marginRight="20dp"
         android:orientation="horizontal">
 
-        <com.xzy.weather.city.SearchEditText
+        <com.xzy.weather.component.SearchEditText
             android:id="@+id/ed_city_add_search"
             android:layout_width="match_parent"
             android:layout_height="48dp"

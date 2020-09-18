@@ -1,4 +1,4 @@
-package com.xzy.weather;
+package com.xzy.weather.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,6 +9,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
+import com.xzy.weather.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -34,6 +34,7 @@ import com.xzy.weather.bean.MyWeatherBean;
 import com.xzy.weather.bean.MyWeatherNowBean;
 import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.setting.SettingActivity;
+import com.xzy.weather.setting.SettingFragment;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.StringUtil;
@@ -333,7 +334,7 @@ public class WeatherFragment extends BaseFragment {
 
     private void registerReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(SettingActivity.UNIT_CHANGE_ACTION);
+        filter.addAction(SettingFragment.UNIT_CHANGE_ACTION);
         if(mReceiver == null) {
             mReceiver = new SettingBroadcastReceiver();
             LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mReceiver, filter);

@@ -115,8 +115,8 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
             holder.tvMin.setText(String.format(mContext.getString(R.string.temperature), tmpWeatherList.get(position).getTempMin(), unit));
         }
 
-        if(mode == MODE_NORMAL){
-            if(holder.ivRemove.getVisibility() == View.VISIBLE){
+        if(mode == MODE_NORMAL) {
+            if(holder.ivRemove.getVisibility() == View.VISIBLE) {
                 holder.ivRemove.setVisibility(View.GONE);
             }
         } else {
@@ -126,7 +126,7 @@ public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAd
         }
         if(listener != null){
             holder.itemView.setOnLongClickListener(v -> {
-                if(mode == MODE_NORMAL){
+                if(mode == MODE_NORMAL) {
                     mode = MODE_EDIT;
                     notifyDataSetChanged();
                 }

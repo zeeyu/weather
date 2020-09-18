@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.xzy.weather.R;
 import com.xzy.weather.base.BaseActivity;
 import com.xzy.weather.bean.MyLocationBean;
+import com.xzy.weather.component.SearchEditText;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.SystemUtil;
@@ -173,7 +174,7 @@ public class CityAddActivity extends BaseActivity {
         }
     }
 
-    public void updateCityList(MyLocationBean newCity){
+    public void updateCityList(MyLocationBean newCity) {
         List<MyLocationBean> cityList = DataStoreUtil.getLocationList(getApplicationContext());
         for(MyLocationBean city : cityList){
             if(city.getId().equals(newCity.getId())){
@@ -191,19 +192,19 @@ public class CityAddActivity extends BaseActivity {
         HeWeatherUtil.getGeoTopCity(getApplicationContext(), topCityList, this::updateTopList);
     }
 
-    synchronized public void getHeSearchCity(String location){
+    synchronized public void getHeSearchCity(String location) {
         if(location == null || "".equals(location)){
             return;
         }
         HeWeatherUtil.getGeoCityLookup(getApplicationContext(), location, searchCityList, this::updatePopup);
     }
 
-    public void getHeLocation(String location){
+    public void getHeLocation(String location) {
         HeWeatherUtil.getGeoCityLookup(getApplicationContext(), location, local, () -> {
-            if(local == null){
+            if(local == null) {
                 topViewHolder.tvLocal.setText(getString(R.string.get_location_failed));
             } else {
-                topViewHolder.tvLocal.setText(local.getCity() + " " + local.getName());
+                topViewHolder.tvLocal.setText(String.format(getString(R.string.location), local.getCity(), local.getName()));
             }
         });
     }

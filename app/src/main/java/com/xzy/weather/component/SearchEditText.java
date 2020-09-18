@@ -1,4 +1,4 @@
-package com.xzy.weather.city;
+package com.xzy.weather.component;
 
 import android.content.Context;
 import android.graphics.Rect;

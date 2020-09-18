@@ -172,7 +172,6 @@ public class CityManageActivity extends BaseActivity {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
         }
     }
 }

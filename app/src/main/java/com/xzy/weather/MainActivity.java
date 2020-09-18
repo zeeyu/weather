@@ -29,6 +29,7 @@ import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.city.CityManageActivity;
 import com.xzy.weather.base.BaseActivity;
+import com.xzy.weather.setting.NotificationService;
 import com.xzy.weather.setting.SettingActivity;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
@@ -79,6 +80,7 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         getPermissions();
         initData();
+        initService();
     }
 
     @Override
@@ -142,6 +144,13 @@ public class MainActivity extends BaseActivity {
                 swipeRefreshLayout.setEnabled(false);
             }
         });
+    }
+
+    protected void initService() {
+        if(setting.isWeatherNotify()) {
+            Intent intent = new Intent(getApplicationContext(), NotificationService.class);
+            startService(intent);
+        }
     }
 
     @Override

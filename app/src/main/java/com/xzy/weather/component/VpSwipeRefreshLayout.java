@@ -1,4 +1,4 @@
-package com.xzy.weather;
+package com.xzy.weather.component;
 
 import android.content.Context;
 import android.util.AttributeSet;

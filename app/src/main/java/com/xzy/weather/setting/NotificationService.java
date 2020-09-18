@@ -5,9 +5,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.xzy.weather.receiver.NotificationReceiver;
 import com.xzy.weather.util.TimeUtil;
 
 /**
@@ -16,6 +18,7 @@ import com.xzy.weather.util.TimeUtil;
  **/
 public class NotificationService extends Service {
 
+    private static final String TAG = "NotificationService";
     int count = 0;
 
     @Nullable
@@ -27,12 +30,13 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Long secondsNextEarlyMorning = TimeUtil.getSecondsNextEarlyMorning(8);
+        long secondsNextEarlyMorning = TimeUtil.getSecondsNextEarlyMorning(9);
         Intent intent1 = new Intent(this, NotificationReceiver.class);
+        Log.d(TAG, "onStartCommand: " + secondsNextEarlyMorning);
         PendingIntent pi = PendingIntent.getBroadcast(this, count++, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         if(manager != null) {
             manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + secondsNextEarlyMorning, pi);
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 }
