@@ -1,4 +1,4 @@
-package com.xzy.weather.setting;
+package com.xzy.weather.notification;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,8 +8,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-
-import com.xzy.weather.receiver.NotificationReceiver;
 import com.xzy.weather.util.TimeUtil;
 
 /**
@@ -32,7 +30,7 @@ public class NotificationService extends Service {
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         long secondsNextEarlyMorning = TimeUtil.getSecondsNextEarlyMorning(9);
         Intent intent1 = new Intent(this, NotificationReceiver.class);
-        Log.d(TAG, "onStartCommand: " + secondsNextEarlyMorning);
+        //Log.d(TAG, "onStartCommand: " + secondsNextEarlyMorning);
         PendingIntent pi = PendingIntent.getBroadcast(this, count++, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         if(manager != null) {
             manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + secondsNextEarlyMorning, pi);

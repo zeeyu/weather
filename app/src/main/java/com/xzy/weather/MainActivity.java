@@ -29,7 +29,7 @@ import com.xzy.weather.bean.MyLocationBean;
 import com.xzy.weather.bean.SettingBean;
 import com.xzy.weather.city.CityManageActivity;
 import com.xzy.weather.base.BaseActivity;
-import com.xzy.weather.setting.NotificationService;
+import com.xzy.weather.notification.NotificationService;
 import com.xzy.weather.setting.SettingActivity;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;

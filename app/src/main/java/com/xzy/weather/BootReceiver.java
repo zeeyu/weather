@@ -1,4 +1,4 @@
-package com.xzy.weather.receiver;
+package com.xzy.weather;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

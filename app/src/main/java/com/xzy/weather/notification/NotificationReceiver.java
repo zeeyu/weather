@@ -1,4 +1,4 @@
-package com.xzy.weather.receiver;
+package com.xzy.weather.notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,7 +14,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.xzy.weather.MainActivity;
 import com.xzy.weather.R;
-import com.xzy.weather.setting.NotificationService;
 
 /**
  * Author:xzy

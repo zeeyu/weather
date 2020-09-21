@@ -13,6 +13,7 @@ import androidx.preference.SwitchPreference;
 import com.xzy.weather.GlobalData;
 import com.xzy.weather.R;
 import com.xzy.weather.bean.SettingBean;
+import com.xzy.weather.notification.NotificationService;
 
 /**
  * Author:xzy

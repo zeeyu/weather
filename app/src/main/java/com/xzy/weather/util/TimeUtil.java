@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -20,9 +21,13 @@ public class TimeUtil {
 
     private static final String TAG = "TimeUtil";
 
-    public static String DEFAULT_TIME = "1970-01-01 00:00";
+    static String DEFAULT_TIME = "1970-01-01 00:00";
 
-    public static int[] MONTH_DAY_COUNT = {
+    private static int LAST_MINUTE = 59;
+
+    private static int LAST_HOUR_OF_DAY = 23;
+
+    private static int[] MONTH_DAY_COUNT = {
             0,31,28,31,30,31,30,31,31,30,31,30,31
     };
 
@@ -108,9 +113,9 @@ public class TimeUtil {
      * @return hh:mm
      */
     public static String getHourNow(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        return calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm", new Locale("zh"));
+        Date date = new Date(System.currentTimeMillis());
+        return format.format(date);
     }
 
     /**
@@ -204,6 +209,28 @@ public class TimeUtil {
         cal.set(Calendar.HOUR_OF_DAY, num);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return (cal.getTimeInMillis() - System.currentTimeMillis());
+    }
+
+    public static long getSecondsNextMinute() {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        if(minute == LAST_MINUTE) {
+            minute = 0;
+            if(hour == LAST_HOUR_OF_DAY) {
+                hour = 0;
+            } else {
+                hour++;
+            }
+        } else {
+            minute++;
+        }
+        cal.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
 
         return (cal.getTimeInMillis() - System.currentTimeMillis());

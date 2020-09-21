@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".base.MyApplication"
@@ -19,9 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <receiver android:name=".AppWidget">
+        <receiver android:name=".widget.AppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_UNLOCKED" />
+                <action android:name="com.xzy.weather.restart" />
             </intent-filter>
 
             <meta-data
@@ -60,13 +64,20 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote"/>
+
         <service
-            android:name=".setting.NotificationService"
+            android:name=".notification.NotificationService"
             android:enabled="true"
             android:process=":remote" />
 
-        <receiver android:name=".receiver.NotificationReceiver" />
+        <service
+            android:name=".widget.WidgetUpdateService"
+            android:enabled="true"
+            android:process=":remote"/>
+
+
+        <receiver android:name=".notification.NotificationReceiver" />
     </application>
 
 </manifest>
