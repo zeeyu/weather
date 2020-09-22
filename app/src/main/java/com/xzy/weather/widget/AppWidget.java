@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -57,39 +58,41 @@ public class AppWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.ll_widget_weather, pi3);
     }
 
+    private void startUpdateService(Context context) {
+        Intent startServiceIntent = new Intent(context, WidgetUpdateService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(startServiceIntent);
+        } else {
+            context.startService(startServiceIntent);
+        }
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.d(TAG, "onReceive");
 
         String action = intent.getAction();
-        if(action == null) {
-            return;
-        }
-        switch(action) {
-            case "com.xzy.weather.restart" :
-            case Intent.ACTION_BOOT_COMPLETED :
-                context.startService(new Intent(context, WidgetUpdateService.class));
-                break;
-            default :
-                updateAppWidget(context);
-        }
+        Log.d(TAG, "onReceive: " + action);
 
+        updateAppWidget(context);
+
+        startUpdateService(context);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
+
         updateAppWidget(context);
-        Intent startServiceIntent = new Intent(context, WidgetUpdateService.class);
-        context.startService(startServiceIntent);
+
+        startUpdateService(context);
     }
 
     @Override
     public void onEnabled(Context context) {
         Log.d(TAG, "onEnabled");
-        Intent startServiceIntent = new Intent(context, WidgetUpdateService.class);
-        context.startService(startServiceIntent);
+
+        startUpdateService(context);
     }
 
     @Override

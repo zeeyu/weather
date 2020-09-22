@@ -120,6 +120,9 @@ public class CityAddActivity extends BaseActivity {
         searchListViewHolder.rvSearch.setLayoutManager(new LinearLayoutManager(this));
 
         edSearch.setOnTextChangedListener(() -> {
+            if(edSearch.getText() == null) {
+                return;
+            }
             String location = edSearch.getText().toString();
             if(edSearch.length() == 0){
                 changeView(historyViewHolder.llHistory);
@@ -164,7 +167,7 @@ public class CityAddActivity extends BaseActivity {
         topViewHolder.rvTop.post(() -> topViewHolder.rvTop.addItemDecoration(new CityTopListDecoration(topViewHolder.rvTop.getWidth(), topViewHolder.rvTop.getChildAt(0).getWidth())));
     }
 
-    protected void updatePopup(){
+    protected void updatePopup() {
         Log.d(TAG, "updatePopup: " + new Gson().toJson(searchCityList));
         adapter.onDataChanged(searchCityList);
         if(searchCityList.size() == 0){
@@ -205,11 +208,12 @@ public class CityAddActivity extends BaseActivity {
                 topViewHolder.tvLocal.setText(getString(R.string.get_location_failed));
             } else {
                 topViewHolder.tvLocal.setText(String.format(getString(R.string.location), local.getCity(), local.getName()));
+                topViewHolder.tvLocal.setOnClickListener(v -> updateCityList(local));
             }
         });
     }
 
-    private void requestLocation(){
+    private void requestLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setIsNeedAddress(true);
         mLocationClient.setLocOption(option);

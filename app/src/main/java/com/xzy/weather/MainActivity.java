@@ -8,11 +8,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +49,10 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
+
+    private static final float APPBAR_ELEVATION_MIN = 0.0f;
+
+    private static final float APPBAR_ELEVATION_MAX = 1.0f;
 
     @BindView(R.id.iv_main_title_city)
     ImageView ivCity;
@@ -117,8 +124,24 @@ public class MainActivity extends BaseActivity {
     protected void initView(){
         //StatusBarUtil.setTranslucentForImageView(this, 100, ivBackground);
 
-        for(MyLocationBean location : locationList){
-            fragments.add(new WeatherFragment(location));
+        for(MyLocationBean location : locationList) {
+            WeatherFragment fragment = new WeatherFragment(location);
+            fragment.setOnBackgroundScrollListener(new WeatherFragment.onBackgroundScrollListener() {
+                @Override
+                public void onScroll() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        appBarLayout.setElevation(APPBAR_ELEVATION_MAX);
+                    }
+                }
+
+                @Override
+                public void onUnScroll() {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        appBarLayout.setElevation(APPBAR_ELEVATION_MIN);
+                    }
+                }
+            });
+            fragments.add(fragment);
         }
 
         Log.d(TAG, "initView: " + new Gson().toJson(locationList));
@@ -148,9 +171,34 @@ public class MainActivity extends BaseActivity {
 
     protected void initService() {
         if(setting.isWeatherNotify()) {
-            Intent intent = new Intent(getApplicationContext(), NotificationService.class);
-            startService(intent);
+            Context context = getApplicationContext();
+            Intent intent = new Intent(context, NotificationService.class);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
         }
+    }
+
+    protected void cityUpdated() {
+        locationList = DataStoreUtil.getLocationList(this);
+        fragments.clear();
+        llSelector.removeAllViews();
+        initView();
+    }
+
+    protected void cityAdded() {
+        locationList = DataStoreUtil.getLocationList(this);
+        int lastIndex = locationList.size() - 1;
+        fragments.add(new WeatherFragment(locationList.get(lastIndex)));
+        WeatherFragmentPagerAdapter adapter = (WeatherFragmentPagerAdapter) viewPager.getAdapter();
+        if(adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+        addSelector(lastIndex);
+        viewPager.setCurrentItem(lastIndex);
     }
 
     @Override
@@ -176,17 +224,21 @@ public class MainActivity extends BaseActivity {
      */
     private void initSelector(){
         for(int i = 0; i < locationList.size(); i++){
-            View view = new View(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(10,10);
-            params.setMargins(5,5,5,5);
-            if(i == 0 && displayLocal){
-                view.setBackgroundResource(R.drawable.selector_local);
-            } else {
-                view.setBackgroundResource(R.drawable.selector_point);
-            }
-            view.setLayoutParams(params);
-            llSelector.addView(view);
+            addSelector(i);
         }
+    }
+
+    private void addSelector(int pos) {
+        View view = new View(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(10,10);
+        params.setMargins(5,5,5,5);
+        if(pos == 0 && displayLocal){
+            view.setBackgroundResource(R.drawable.selector_local);
+        } else {
+            view.setBackgroundResource(R.drawable.selector_point);
+        }
+        view.setLayoutParams(params);
+        llSelector.addView(view);
     }
 
     private void initViewPager(){
@@ -206,6 +258,14 @@ public class MainActivity extends BaseActivity {
                     llSelector.getChildAt(i).setSelected(false);
                 }
                 llSelector.getChildAt(position).setSelected(true);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (fragments.get(position).isBackgroundScrolled()) {
+                        appBarLayout.setElevation(APPBAR_ELEVATION_MAX);
+                    } else {
+                        appBarLayout.setElevation(APPBAR_ELEVATION_MIN);
+                    }
+                }
             }
 
             @Override
@@ -218,7 +278,7 @@ public class MainActivity extends BaseActivity {
             listener.onPageSelected(viewPager.getCurrentItem());
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
             lp.topMargin = -appBarLayout.getHeight();
-        }, 1000);
+        }, 500);
     }
 
     /**
@@ -287,29 +347,27 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
-            if(resultCode == 1){
-                initData();
+        if(requestCode == 1) {
+            if(resultCode == 1) {
+                cityUpdated();
+            } else if(resultCode == 2) {
+                cityAdded();
             }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode) {
-            case 1 :
-                if(grantResults.length > 0) {
-                    for(int result : grantResults) {
-                        if(result != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
-                            finish();
-                            return;
-                        }
+        if (requestCode == 1) {
+            if (grantResults.length > 0) {
+                for (int result : grantResults) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
                     }
                 }
-                break;
-            default:
-                break;
+            }
         }
     }
 }

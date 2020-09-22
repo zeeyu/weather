@@ -118,7 +118,7 @@ public class CityManageActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1){
             if(resultCode == 1){
-                setResult(1);
+                setResult(2);
                 finish();
             }
         }

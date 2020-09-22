@@ -198,7 +198,7 @@ public class TimeUtil {
     /**
      * 获取时间差
      */
-    public static long getSecondsNextEarlyMorning(int num) {
+    public static long getMillisNextEarlyMorning(int num) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         if (cal.get(Calendar.HOUR_OF_DAY) - num >= 0) {
             //如果当前时间大于等于8点 就计算第二天的8点的
@@ -214,7 +214,7 @@ public class TimeUtil {
         return (cal.getTimeInMillis() - System.currentTimeMillis());
     }
 
-    public static long getSecondsNextMinute() {
+    public static long getMillisNextMinute() {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);

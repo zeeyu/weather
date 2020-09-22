@@ -91,6 +91,25 @@ public class MyLocationBean {
         return sb.toString();
     }
 
+    /**
+     * 获取地址字符串
+     * @return 格式 [省-市]||[市-区]||[国家-省]
+     */
+    public String getBriefAddress() {
+        StringBuilder sb = new StringBuilder();
+        if(name != null) {
+            sb.append(name);
+        }
+        if(city != null && !city.equals(name)) {
+            sb.insert(0, city + " ");
+        } else if(province != null && !province.equals(name)) {
+            sb.insert(0, province + " ");
+        } else if(country != null && !country.equals(name)) {
+            sb.insert(0, country + " ");
+        }
+        return sb.toString();
+    }
+
     public String getId() {
         return id;
     }

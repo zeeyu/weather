@@ -19,12 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:persistent="true"
         android:usesCleartextTraffic="true">
         <receiver android:name=".widget.AppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.USER_UNLOCKED" />
+                <action android:name="android.intent.action.SCREEN_ON" />
                 <action android:name="com.xzy.weather.restart" />
             </intent-filter>
 
@@ -74,8 +75,7 @@
         <service
             android:name=".widget.WidgetUpdateService"
             android:enabled="true"
-            android:process=":remote"/>
-
+            android:process=":remote" />
 
         <receiver android:name=".notification.NotificationReceiver" />
     </application>

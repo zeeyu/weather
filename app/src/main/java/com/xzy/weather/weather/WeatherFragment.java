@@ -128,6 +128,9 @@ public class WeatherFragment extends BaseFragment {
     private SettingBean setting;
     private SettingBroadcastReceiver mReceiver;
 
+    private onBackgroundScrollListener mListener;
+    private boolean isScrolled = false;
+
     public WeatherFragment() {
         // Required empty public constructor
     }
@@ -202,8 +205,16 @@ public class WeatherFragment extends BaseFragment {
                 if (scrollY < height) {
                     float scale = (float) scrollY / height;
                     flTitle.setAlpha(ALPHA_MAX * (1 - scale));
+                    if(mListener != null) {
+                        mListener.onUnScroll();
+                        isScrolled = false;
+                    }
                 } else {
                     flTitle.setAlpha(ALPHA_MIN);
+                    if(mListener != null) {
+                        mListener.onScroll();
+                        isScrolled = true;
+                    }
                 }
             });
         }
@@ -345,5 +356,18 @@ public class WeatherFragment extends BaseFragment {
         if(mReceiver != null) {
             LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mReceiver);
         }
+    }
+
+    public void setOnBackgroundScrollListener(onBackgroundScrollListener listener) {
+        mListener = listener;
+    }
+
+    public interface onBackgroundScrollListener {
+        void onScroll();
+        void onUnScroll();
+    }
+
+    public boolean isBackgroundScrolled() {
+        return isScrolled;
     }
 }
