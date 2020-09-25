@@ -41,6 +41,10 @@ public class CityAddActivity extends BaseActivity {
 
     private static final String TAG = "CityAddActivity";
 
+    public static final int BUTTON_WIDTH = 100;
+
+    private static final int MAX_CITY_NUM = 10;
+
     @BindView(R.id.ed_city_add_search)
     SearchEditText edSearch;
     @BindView(R.id.tb_city_add)
@@ -60,7 +64,7 @@ public class CityAddActivity extends BaseActivity {
     SearchListViewHolder searchListViewHolder;
     SearchFailedViewHolder searchFailedViewHolder;
 
-    CitySearchListAdapter adapter;
+    CitySearchListAdapter searchAdapter;
 
     LinearLayout.LayoutParams params1;
     LinearLayout.LayoutParams params2;
@@ -69,8 +73,7 @@ public class CityAddActivity extends BaseActivity {
     MyLocationBean local = new MyLocationBean();
     List<MyLocationBean> topCityList = new ArrayList<>();
     List<MyLocationBean> searchCityList= new ArrayList<>();
-
-    public static int BUTTON_WIDTH = 100;
+    List<MyLocationBean> historyCityList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class CityAddActivity extends BaseActivity {
         mLocationClient.registerLocationListener(new MyLocationListener());
         requestLocation();
 
+        updateHistoryList();
         initView();
     }
 
@@ -114,9 +118,9 @@ public class CityAddActivity extends BaseActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
         toolbar.setTitle(getString(R.string.label_city_add));
 
-        adapter = new CitySearchListAdapter(searchCityList);
-        searchListViewHolder.rvSearch.setAdapter(adapter);
-        adapter.setOnItemClickListener(position -> updateCityList(searchCityList.get(position)));
+        searchAdapter = new CitySearchListAdapter(searchCityList);
+        searchListViewHolder.rvSearch.setAdapter(searchAdapter);
+        searchAdapter.setOnItemClickListener(position -> updateCityList(searchCityList.get(position)));
         searchListViewHolder.rvSearch.setLayoutManager(new LinearLayoutManager(this));
 
         edSearch.setOnTextChangedListener(() -> {
@@ -153,12 +157,12 @@ public class CityAddActivity extends BaseActivity {
         });
     }
 
-    protected void changeView(View view){
+    protected void changeView(View view) {
         frame.removeAllViews();
         frame.addView(view);
     }
 
-    protected void updateTopList(){
+    protected void updateTopList() {
         GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), 3);
         topViewHolder.rvTop.setLayoutManager(manager);
         CityTopListAdapter adapter = new CityTopListAdapter(topCityList);
@@ -167,9 +171,23 @@ public class CityAddActivity extends BaseActivity {
         topViewHolder.rvTop.post(() -> topViewHolder.rvTop.addItemDecoration(new CityTopListDecoration(topViewHolder.rvTop.getWidth(), topViewHolder.rvTop.getChildAt(0).getWidth())));
     }
 
+    protected void updateHistoryList() {
+        GridLayoutManager manager = new GridLayoutManager(getApplicationContext(), 5);
+        historyCityList = DataStoreUtil.getCityHistory(getApplicationContext());
+        CityHistoryListAdapter adapter = new CityHistoryListAdapter(historyCityList);
+        adapter.setOnItemClickListener(position -> updateCityList(historyCityList.get(position)));
+        historyViewHolder.rvHistory.setLayoutManager(manager);
+        historyViewHolder.rvHistory.setAdapter(adapter);
+        historyViewHolder.tvClear.setOnClickListener(v -> {
+            DataStoreUtil.setCityHistory(getApplicationContext(), null);
+            historyCityList = new ArrayList<>();
+            adapter.notifyDataSetChanged();
+        });
+    }
+
     protected void updatePopup() {
         Log.d(TAG, "updatePopup: " + new Gson().toJson(searchCityList));
-        adapter.onDataChanged(searchCityList);
+        searchAdapter.onDataChanged(searchCityList);
         if(searchCityList.size() == 0){
             changeView(searchFailedViewHolder.llSearchFailed);
         } else {
@@ -179,13 +197,25 @@ public class CityAddActivity extends BaseActivity {
 
     public void updateCityList(MyLocationBean newCity) {
         List<MyLocationBean> cityList = DataStoreUtil.getLocationList(getApplicationContext());
-        for(MyLocationBean city : cityList){
-            if(city.getId().equals(newCity.getId())){
+
+        if(cityList == null) {
+            cityList = new ArrayList<>();
+        }
+
+        if(cityList.size() >= MAX_CITY_NUM) {
+            Toast.makeText(this, getString(R.string.city_max), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        for(MyLocationBean city : cityList) {
+            if(city.getId().equals(newCity.getId())) {
                 Toast.makeText(this, getString(R.string.city_added), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
+
         cityList.add(newCity);
+        DataStoreUtil.setCityHistory(getApplicationContext(), cityList);
         DataStoreUtil.setLocationList(getApplicationContext(), cityList);
         setResult(1);
         finish();
@@ -254,6 +284,8 @@ public class CityAddActivity extends BaseActivity {
         LinearLayout llHistory;
         @BindView(R.id.rv_city_add_history)
         RecyclerView rvHistory;
+        @BindView(R.id.tv_city_history_clear)
+        TextView tvClear;
 
         HistoryViewHolder(View view){
             ButterKnife.bind(this, view);

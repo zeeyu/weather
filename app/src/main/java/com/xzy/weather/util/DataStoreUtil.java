@@ -3,6 +3,7 @@ package com.xzy.weather.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import com.google.gson.Gson;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Author:xzy
@@ -26,6 +26,7 @@ import java.util.Map;
 public class DataStoreUtil {
 
     private static String NAME_LOCATION_LIST = "location_list";
+    private static String NAME_CITY_HISTORY = "city_history";
     private static String KEY_LOCATION_LIST = "location";
     private static String KEY_WEATHER_7D = "weather7d";
     private static String KEY_WEATHER_24H = "weather24h";
@@ -34,6 +35,7 @@ public class DataStoreUtil {
     private static String KEY_UPDATE_TIME = "update_time";
     private static String KEY_SETTING_NOTIFY = "setting_weather_notify";
     private static String KEY_SETTING_UNIT = "setting_temp_unit";
+    private static String KEY_CITY_HISTORY = "city_history";
     private static String KEY_SETTING_UPDATE = "setting_auto_update";
 
     /**
@@ -151,5 +153,22 @@ public class DataStoreUtil {
         settingBean.setAutoUpdateTime(sp.getString(KEY_UPDATE_TIME, "1小时"));
         settingBean.setTempUnit(sp.getString(KEY_SETTING_UNIT, "°C"));
         return settingBean;
+    }
+
+    synchronized public static void setCityHistory(@NotNull Context context, @Nullable List<MyLocationBean> cityList) {
+        if(cityList == null) {
+            cityList = new ArrayList<>();
+        }
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sp.edit();
+        String json = new Gson().toJson(cityList);
+        editor.putString(KEY_CITY_HISTORY, json);
+        editor.apply();
+    }
+
+    public static List<MyLocationBean> getCityHistory(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String json = sp.getString(KEY_CITY_HISTORY, "");
+        return new Gson().fromJson(json, new TypeToken<ArrayList<MyLocationBean>>(){}.getType());
     }
 }

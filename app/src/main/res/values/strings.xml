@@ -34,6 +34,7 @@
     <string name="clear_history">清除历史</string>
     <string name="city_search_failed">没有匹配的城市</string>
     <string name="city_added">所选城市已存在</string>
+    <string name="city_max">若要添加新城市，请先移除一个城市</string>
     <string name="edit">编辑</string>
 
     <string name="setting_weather_notify">天气通知提醒</string>
