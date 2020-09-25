@@ -2,18 +2,26 @@ package com.xzy.weather;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -78,7 +86,9 @@ public class MainActivity extends BaseActivity {
 
     private List<WeatherFragment> fragments = new ArrayList<>();
 
-    private boolean displayLocal = false;
+    private boolean displayLocal = true;
+
+    //private boolean locationReceived = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,29 +118,55 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
 
-        locationList = DataStoreUtil.getLocationList(this);
+        List<MyLocationBean> tmpLocationList = DataStoreUtil.getLocationList(this);
+        locationList.clear();
+
+        for (MyLocationBean location : tmpLocationList) {
+            if (location != null && location.getId() != null && location.getId() != null) {
+                locationList.add(location);
+            }
+        }
+        setting = DataStoreUtil.getSettingInfo(getApplicationContext());
+
+        GlobalData.getInstance().setSetting(setting);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            initData();
+        });
+        //getPermissions();
+
+        if (!isGpsAvailable(this)) {
+            showNoLocationDialog();
+            return;
+        }
+
+        if (!isNetworkAvailable(this)) {
+            showNoNetworkDialog();
+            return;
+        }
 
         mLocationClient = new LocationClient(getApplicationContext());
         mLocationClient.registerLocationListener(new MyLocationListener());
         requestLocation();
-
-        setting = DataStoreUtil.getSettingInfo(getApplicationContext());
-
-        GlobalData.getInstance().setSetting(setting);
-        //getPermissions();
     }
 
     @Override
     protected void initView(){
-        //StatusBarUtil.setTranslucentForImageView(this, 100, ivBackground);
+        //StatusBarUtil.setTranslucentForImageView(this, 100, ivBackground)
 
         for(MyLocationBean location : locationList) {
+            if(location.getId() == null || location.getName() == null) {
+                //locationList.remove(location);
+                continue;
+            }
             WeatherFragment fragment = new WeatherFragment(location);
             fragment.setOnBackgroundScrollListener(new WeatherFragment.onBackgroundScrollListener() {
                 @Override
                 public void onScroll() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         appBarLayout.setElevation(APPBAR_ELEVATION_MAX);
+                        appBarLayout.setBackground(getDrawable(R.color.white));
                     }
                 }
 
@@ -138,6 +174,7 @@ public class MainActivity extends BaseActivity {
                 public void onUnScroll() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         appBarLayout.setElevation(APPBAR_ELEVATION_MIN);
+                        appBarLayout.setBackground(getDrawable(R.color.transparent));
                     }
                 }
             });
@@ -184,9 +221,11 @@ public class MainActivity extends BaseActivity {
 
     protected void cityUpdated() {
         locationList = DataStoreUtil.getLocationList(this);
-        fragments.clear();
-        llSelector.removeAllViews();
-        initView();
+        if(locationList == null || locationList.size() == 0){
+            initData();
+        } else {
+            initView();
+        }
     }
 
     protected void cityAdded() {
@@ -223,12 +262,14 @@ public class MainActivity extends BaseActivity {
      * 添加ViewPager页面位置指示图标
      */
     private void initSelector(){
+        llSelector.removeAllViews();
         for(int i = 0; i < locationList.size(); i++){
             addSelector(i);
         }
     }
 
     private void addSelector(int pos) {
+
         View view = new View(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(10,10);
         params.setMargins(5,5,5,5);
@@ -241,7 +282,7 @@ public class MainActivity extends BaseActivity {
         llSelector.addView(view);
     }
 
-    private void initViewPager(){
+    private void initViewPager() {
         ViewPager.OnPageChangeListener listener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -272,8 +313,14 @@ public class MainActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         };
-        viewPager.addOnPageChangeListener(listener);
-        viewPager.setAdapter(new WeatherFragmentPagerAdapter(getSupportFragmentManager(), fragments));
+
+        try {
+            viewPager.addOnPageChangeListener(listener);
+            viewPager.setAdapter(new WeatherFragmentPagerAdapter(getSupportFragmentManager(), fragments));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         viewPager.postDelayed(() -> {
             listener.onPageSelected(viewPager.getCurrentItem());
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) viewPager.getLayoutParams();
@@ -326,12 +373,85 @@ public class MainActivity extends BaseActivity {
         HeWeatherUtil.getGeoCityLookup(this.getApplicationContext(), location, myLocationBean, () -> onReceiveLocationData(myLocationBean));
     }
 
+    private void showNoLocationDialog() {
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        //normalDialog.setIcon(R.drawable.icon_dialog);
+        normalDialog.setTitle("提示");
+        normalDialog.setMessage("GPS服务已关闭，是否开启");
+        normalDialog.setPositiveButton("开启",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                    }
+                });
+        // 显示
+        normalDialog.show();
+    }
+
+    private void showNoNetworkDialog() {
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        //normalDialog.setIcon(R.drawable.icon_dialog);
+        normalDialog.setTitle("提示");
+        normalDialog.setMessage("当前网络不可用，请检查网络连接。");
+        normalDialog.setPositiveButton("开启",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                        startActivity(intent);
+                    }
+                });
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                    }
+                });
+        // 显示
+        normalDialog.show();
+    }
+
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected())
+            {
+                // 当前网络是连接的
+                // 当前所连接的网络可用
+                return info.getState() == NetworkInfo.State.CONNECTED;
+            }
+        }
+        return false;
+    }
+
+    public boolean isGpsAvailable(Context context) {
+        LocationManager lm;
+        lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        //开了定位服务
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    };
+
     /**
      * 处理和风天气返回的位置信息
      */
     public void onReceiveLocationData(MyLocationBean myLocationBean) {
         if(myLocationBean != null) {
             if (locationList == null) {
+                showNoLocationDialog();
                 locationList = new ArrayList<>();
             }
             if (locationList.size() == 0 || locationList.get(0).getId() == null ||!locationList.get(0).getId().equals(myLocationBean.getId())) {
@@ -362,7 +482,7 @@ public class MainActivity extends BaseActivity {
             if (grantResults.length > 0) {
                 for (int result : grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "aaa", Toast.LENGTH_SHORT).show();
                         finish();
                         return;
                     }

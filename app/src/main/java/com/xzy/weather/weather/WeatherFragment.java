@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -38,6 +39,7 @@ import com.xzy.weather.setting.SettingFragment;
 import com.xzy.weather.util.DataStoreUtil;
 import com.xzy.weather.util.HeWeatherUtil;
 import com.xzy.weather.util.StringUtil;
+import com.xzy.weather.util.SystemUtil;
 import com.xzy.weather.util.TimeUtil;
 import com.xzy.weather.warning.WarningActivity;
 
@@ -139,7 +141,7 @@ public class WeatherFragment extends BaseFragment {
         this.location = location;
     }
 
-    private void initData(){
+    private void initData() {
 
         Log.d(TAG, "initData");
         String time = DataStoreUtil.getLocationInfoUpdateTime(getApplicationContext(), location.getId());
@@ -148,6 +150,15 @@ public class WeatherFragment extends BaseFragment {
         weatherHourlyList.clear();
         warningList.clear();
         setting = GlobalData.getInstance().getSetting();
+//        weatherNow = DataStoreUtil.getWeatherNow(getApplicationContext(), location.getId());
+//        weatherHourlyList = DataStoreUtil.getWeather24h(getApplicationContext(), location.getId());
+//        weatherDailyList = DataStoreUtil.getWeather7d(getApplicationContext(), location.getId());
+//        warningList = DataStoreUtil.getWarning(getApplicationContext(), location.getId());
+//        if(TimeUtil.getIntervalHour(TimeUtil.getHourNow(), TimeUtil.getTimeHour(time), TimeUtil.getDateNow(), TimeUtil.getTimeDate(time)) < 0.1f
+//                || !SystemUtil.isGpsAvailable(getApplicationContext()) || !SystemUtil.isNetworkAvailable(getApplicationContext())){
+//            atomicInteger.set(1);
+//            updateView();
+//        }
         if(TimeUtil.getIntervalHour(TimeUtil.getHourNow(), TimeUtil.getTimeHour(time), TimeUtil.getDateNow(), TimeUtil.getTimeDate(time)) < 0.1f){
             weatherNow = DataStoreUtil.getWeatherNow(getApplicationContext(), location.getId());
             weatherHourlyList = DataStoreUtil.getWeather24h(getApplicationContext(), location.getId());
@@ -255,7 +266,6 @@ public class WeatherFragment extends BaseFragment {
         tvType.setText(weatherNow.getText());
         tvAir.setText(String.format(getResources().getString(R.string.air), weatherNow.getAir()));
         tvUnit.setText(setting.getTempUnit());
-
 
         String weather = weatherNow.getText();
         int id = getResources().getIdentifier("background_" + StringUtil.getWeatherBackgroundName(weather), "drawable", "com.xzy.weather");
