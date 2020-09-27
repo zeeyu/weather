@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 public class CityHistoryListAdapter extends RecyclerView.Adapter<CityHistoryListAdapter.ViewHolder> {
 
     private List<MyLocationBean> mLocationList;
-    private CityTopListAdapter.OnItemClickListener mListener;
+    private OnItemClickListener mListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -60,11 +60,11 @@ public class CityHistoryListAdapter extends RecyclerView.Adapter<CityHistoryList
         return mLocationList.size();
     }
 
-    void setOnItemClickListener(CityTopListAdapter.OnItemClickListener listener){
+    void setOnItemClickListener(OnItemClickListener listener){
         mListener = listener;
     }
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void OnClick(int position);
     }
 }

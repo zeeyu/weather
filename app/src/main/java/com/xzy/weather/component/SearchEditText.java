@@ -8,7 +8,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.EditText;
 
 import com.xzy.weather.R;
 
@@ -18,7 +17,7 @@ import com.xzy.weather.R;
  **/
 public class SearchEditText extends androidx.appcompat.widget.AppCompatEditText {
 
-    private static final String TAG = "SearchEditText";
+    //private static final String TAG = "SearchEditText";
 
     private Context mContext;
     private Drawable imgSearch;
@@ -77,7 +76,17 @@ public class SearchEditText extends androidx.appcompat.widget.AppCompatEditText 
                 setText("");
             }
         }
+
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            performClick();
+        }
+
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
     public void setOnTextChangedListener(OnTextChangeListener l){

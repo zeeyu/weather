@@ -1,7 +1,6 @@
 package com.xzy.weather.city;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
  **/
 public class CityManageListAdapter extends RecyclerView.Adapter<CityManageListAdapter.ViewHolder> {
 
-    private static final String TAG = "CityManageListAdapter";
+    //private static final String TAG = "CityManageListAdapter";
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 

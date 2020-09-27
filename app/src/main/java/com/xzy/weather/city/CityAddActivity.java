@@ -86,10 +86,10 @@ public class CityAddActivity extends BaseActivity {
 
     protected void inflateViews(){
         LayoutInflater inflater = LayoutInflater.from(this);
-        topViewHolder = new TopViewHolder(inflater.inflate(R.layout.include_city_add_top, frame));
-        historyViewHolder = new HistoryViewHolder(inflater.inflate(R.layout.include_city_add_history, frame));
-        searchListViewHolder = new SearchListViewHolder(inflater.inflate(R.layout.include_city_add_search_list, frame));
-        searchFailedViewHolder = new SearchFailedViewHolder(inflater.inflate(R.layout.include_city_add_search_failed, frame));
+        topViewHolder = new TopViewHolder(inflater.inflate(R.layout.include_city_add_top, frame, false));
+        historyViewHolder = new HistoryViewHolder(inflater.inflate(R.layout.include_city_add_history, frame, false));
+        searchListViewHolder = new SearchListViewHolder(inflater.inflate(R.layout.include_city_add_search_list, frame, false));
+        searchFailedViewHolder = new SearchFailedViewHolder(inflater.inflate(R.layout.include_city_add_search_failed, frame, false));
     }
 
     @Override
@@ -158,8 +158,10 @@ public class CityAddActivity extends BaseActivity {
     }
 
     protected void changeView(View view) {
+        //Log.d(TAG, "changeView: " + view + " " + view.getParent());
         frame.removeAllViews();
         frame.addView(view);
+        //Log.d(TAG, "changeView: " + view + " " + view.getParent());
     }
 
     protected void updateTopList() {
@@ -182,6 +184,7 @@ public class CityAddActivity extends BaseActivity {
             DataStoreUtil.setCityHistory(getApplicationContext(), null);
             historyCityList = new ArrayList<>();
             adapter.notifyDataSetChanged();
+            historyViewHolder.rvHistory.invalidate();
         });
     }
 
@@ -215,8 +218,17 @@ public class CityAddActivity extends BaseActivity {
         }
 
         cityList.add(newCity);
-        DataStoreUtil.setCityHistory(getApplicationContext(), cityList);
         DataStoreUtil.setLocationList(getApplicationContext(), cityList);
+
+        for(MyLocationBean location : historyCityList) {
+            if(newCity.getId().equals(location.getId())) {
+                historyCityList.remove(location);
+                break;
+            }
+        }
+        historyCityList.add(newCity);
+        DataStoreUtil.setCityHistory(getApplicationContext(), historyCityList);
+
         setResult(1);
         finish();
     }
@@ -263,6 +275,7 @@ public class CityAddActivity extends BaseActivity {
 
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        //llSearch.requestFocus();
         super.onConfigurationChanged(newConfig);
     }
 

@@ -169,6 +169,7 @@ public class DataStoreUtil {
     public static List<MyLocationBean> getCityHistory(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         String json = sp.getString(KEY_CITY_HISTORY, "");
-        return new Gson().fromJson(json, new TypeToken<ArrayList<MyLocationBean>>(){}.getType());
+        List<MyLocationBean> list =  new Gson().fromJson(json, new TypeToken<ArrayList<MyLocationBean>>(){}.getType());
+        return list == null ? new ArrayList<>() : list;
     }
 }

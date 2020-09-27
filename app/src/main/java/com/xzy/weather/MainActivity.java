@@ -5,13 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -20,10 +18,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -380,46 +376,29 @@ public class MainActivity extends BaseActivity {
         normalDialog.setTitle("提示");
         normalDialog.setMessage("GPS服务已关闭，是否开启");
         normalDialog.setPositiveButton("开启",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(intent);
-                    }
+                (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
                 });
         normalDialog.setNegativeButton("取消",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //...To-do
-                    }
-                });
-        // 显示
+                (dialog, which) -> {
+        });
         normalDialog.show();
     }
 
     private void showNoNetworkDialog() {
-        final AlertDialog.Builder normalDialog =
-                new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog.Builder normalDialog = new AlertDialog.Builder(MainActivity.this);
         //normalDialog.setIcon(R.drawable.icon_dialog);
         normalDialog.setTitle("提示");
         normalDialog.setMessage("当前网络不可用，请检查网络连接。");
         normalDialog.setPositiveButton("开启",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                        startActivity(intent);
-                    }
+                (dialog, which) -> {
+                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    startActivity(intent);
                 });
         normalDialog.setNegativeButton("取消",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //...To-do
-                    }
+                (dialog, which) -> {
                 });
-        // 显示
         normalDialog.show();
     }
 
@@ -428,10 +407,7 @@ public class MainActivity extends BaseActivity {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo info = connectivity.getActiveNetworkInfo();
-            if (info != null && info.isConnected())
-            {
-                // 当前网络是连接的
-                // 当前所连接的网络可用
+            if (info != null && info.isConnected()) {
                 return info.getState() == NetworkInfo.State.CONNECTED;
             }
         }
@@ -441,9 +417,8 @@ public class MainActivity extends BaseActivity {
     public boolean isGpsAvailable(Context context) {
         LocationManager lm;
         lm = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        //开了定位服务
-        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    };
+        return lm != null && lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
 
     /**
      * 处理和风天气返回的位置信息
